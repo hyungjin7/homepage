@@ -23,7 +23,6 @@ chat.delvrio.com|/|Chat|델브 업무|rocket-chat.png|Rocket.Chat|60|
 nextcloud.delvrio.com|/|NextCloud|델브 업무|nextcloud.png|파일 공유|70|
 suntax.delvrio.com|/|Suntax|고객|mdi-calculator-variant-outline|세무 업무 (자체 로그인)|80|
 www.delvrio.com|/|홈페이지|델브 업무|mdi-web|Delve 회사 홈페이지|90|
-www.delvrio.com|/workspace.html|Workspace|델브 업무|mdi-link-variant|예전 사내 바로가기|91|https://www.delvrio.com/workspace.html
 dashboard.delvrio.com|/|Dashboard|운영 · 모니터링|mdi-view-dashboard-outline|예약 작업 · GPU · 운영|10|
 grafana.delvrio.com|/|Grafana|운영 · 모니터링|grafana.png|그래프 · GPU 기록|20|
 prometheus.delvrio.com|/|Prometheus|운영 · 모니터링|prometheus.png|지표 수집|30|
@@ -32,7 +31,7 @@ flower.delvrio.com|/|Flower|운영 · 모니터링|mdi-flower-outline|Celery 작
 gitea.delvrio.com|/|Gitea|운영 · 모니터링|gitea.png|빌드 · 배포|60|
 argocd.delvrio.com|/|Argo CD|운영 · 모니터링|argo-cd.png|배포 상태|70|
 netdata.delvrio.com|/|Netdata|운영 · 모니터링|netdata.png|서버 실시간 상태|80|
-sso.delvrio.com|/admin|Keycloak|운영 · 모니터링|keycloak.png|로그인 관리 (회사에서만)|90|https://sso.delvrio.com/admin/
+sso.delvrio.com|/admin|Keycloak|운영 · 모니터링|keycloak.png|로그인 관리 (회사에서만)|90|https://sso.delvrio.com/admin/master/console/
 dify.delvrio.com|/|Dify|AI · 개발|dify.png|AI 워크플로|10|
 omlx.delvrio.com|/|oMLX|AI · 개발|mdi-brain|로컬 LLM 서버|20|https://omlx.delvrio.com/admin
 odysseus.delvrio.com|/|Odysseus|AI · 개발|mdi-sail-boat|AI 작업실|30|
