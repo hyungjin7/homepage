@@ -8,6 +8,9 @@ layout:
   델브 업무:
     style: row
     columns: 4
+  고객:
+    style: row
+    columns: 4
   운영 · 모니터링:
     style: row
     columns: 4
