@@ -8,7 +8,7 @@
 |---|---|
 | `00-namespace.yaml` | namespace `homepage` |
 | `01-rbac.yaml` | 쿠버네티스 위젯용 **읽기 전용** 권한(get/list 만) |
-| `02-app.yaml` | Deployment·Service(포트 3000). DB·PVC 없음, 로그만 emptyDir |
+| `02-app.yaml` | Deployment·Service(포트 3000). DB·PVC 없음. `/app/config` 는 쓰기 가능한 emptyDir 이고 시작할 때 ConfigMap 을 복사해 넣는다 |
 | `03-sso-ingress.yaml` | 델브 로그인(forwardAuth) + Ingress `homepage.delvrio.com`(letsencrypt-prod). 회사 전용 문(`homepage-lan`)은 만들어만 두고 꺼 둠 |
 | `config/*.yaml` | 화면 설정(서비스 카드·위젯·북마크). kustomize 가 ConfigMap 으로 만든다 |
 | `secrets.example.yaml` | 위젯 키 예시(적용 안 함) |
