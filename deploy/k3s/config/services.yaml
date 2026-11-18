@@ -34,6 +34,22 @@
         href: https://nextcloud.delvrio.com
         description: 파일 공유
         icon: nextcloud.png
+    - GL:
+        href: https://gl.delvrio.com
+        description: 그린로직스 (SLP 같은 앱)
+        icon: mdi-truck-fast-outline
+    - Suntax:
+        href: https://suntax.delvrio.com
+        description: 세무 업무 (자체 로그인)
+        icon: mdi-calculator-variant-outline
+    - 홈페이지:
+        href: https://www.delvrio.com
+        description: Delve 회사 홈페이지
+        icon: mdi-web
+    - Workspace:
+        href: https://www.delvrio.com/workspace.html
+        description: 예전 사내 바로가기
+        icon: mdi-link-variant
 
 - 운영 · 모니터링:
     - Dashboard:
@@ -61,6 +77,18 @@
         href: https://gitea.delvrio.com
         description: 빌드 · 배포
         icon: gitea.png
+    - Argo CD:
+        href: https://argocd.delvrio.com
+        description: 배포 상태
+        icon: argo-cd.png
+    - Netdata:
+        href: https://netdata.delvrio.com
+        description: 서버 실시간 상태
+        icon: netdata.png
+    - Keycloak:
+        href: https://sso.delvrio.com/admin/
+        description: 로그인 관리 (회사에서만)
+        icon: keycloak.png
 
 - AI · 개발:
     - Dify:
@@ -75,6 +103,26 @@
         href: https://odysseus.delvrio.com
         description: AI 작업실
         icon: mdi-sail-boat
+    - n8n:
+        href: https://n8n.delvrio.com
+        description: 자동화 워크플로
+        icon: n8n.png
+    - Open WebUI:
+        href: https://ai.delvrio.com
+        description: AI 채팅
+        icon: open-webui.png
+    - OpenClaw:
+        href: https://openclaw.delvrio.com
+        description: AI 에이전트
+        icon: mdi-robot-excited-outline
+    - MoA:
+        href: https://moa.delvrio.com
+        description: 설계 문서
+        icon: mdi-book-open-page-variant-outline
+    - MCP:
+        href: https://mcp.delvrio.com/youtube
+        description: MCP 서버 (YouTube 조회)
+        icon: mdi-connection
     - GitHub:
         href: https://github.com/hyungjin7
         description: 소스 정본
