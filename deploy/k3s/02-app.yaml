@@ -1,5 +1,5 @@
 # Homepage 본체. 원본 공식 이미지를 고정 태그로 쓴다(포크는 설정만 담는다).
-# 저장할 자료가 없어 DB·PVC 가 없다. 로그만 emptyDir(Pod 가 다시 뜨면 사라짐).
+# 저장할 자료가 없어 DB·PVC 가 없다. 설정 폴더·로그는 emptyDir(Pod 가 다시 뜨면 ConfigMap 에서 다시 복사).
 # 버전 올리기: image 태그만 바꿔 다시 apply.
 apiVersion: apps/v1
 kind: Deployment
@@ -22,6 +22,21 @@ spec:
       serviceAccountName: homepage
       automountServiceAccountToken: true
       enableServiceLinks: false
+      initContainers:
+      - name: copy-config
+        image: ghcr.io/gethomepage/homepage:v2.8.0
+        imagePullPolicy: IfNotPresent
+        command: ["sh", "-c", "cp /config-src/* /app/config/"]
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: [ALL]
+          runAsNonRoot: true
+          runAsUser: 1000
+          runAsGroup: 1000
+        volumeMounts:
+        - {name: config, mountPath: /config-src, readOnly: true}
+        - {name: config-dir, mountPath: /app/config}
       containers:
       - name: homepage
         image: ghcr.io/gethomepage/homepage:v2.8.0
@@ -76,20 +91,14 @@ spec:
             cpu: "1"
             memory: 512Mi
         volumeMounts:
-        - {name: config, mountPath: /app/config/settings.yaml, subPath: settings.yaml}
-        - {name: config, mountPath: /app/config/services.yaml, subPath: services.yaml}
-        - {name: config, mountPath: /app/config/bookmarks.yaml, subPath: bookmarks.yaml}
-        - {name: config, mountPath: /app/config/widgets.yaml, subPath: widgets.yaml}
-        - {name: config, mountPath: /app/config/kubernetes.yaml, subPath: kubernetes.yaml}
-        - {name: config, mountPath: /app/config/docker.yaml, subPath: docker.yaml}
-        - {name: config, mountPath: /app/config/custom.css, subPath: custom.css}
-        - {name: config, mountPath: /app/config/custom.js, subPath: custom.js}
-        - {name: logs, mountPath: /app/config/logs}
+        - {name: config-dir, mountPath: /app/config}
       volumes:
       - name: config
         configMap:
           name: homepage-config
-      - name: logs
+      # /app/config 는 쓰기 가능한 빈 폴더(emptyDir). 시작할 때 ConfigMap 파일을 복사해 넣는다.
+      # 새 버전이 설정 파일을 더 요구해도(예: proxmox.yaml) 앱이 기본 파일을 스스로 만들 수 있다. 로그도 여기 쌓인다.
+      - name: config-dir
         emptyDir: {}
 ---
 apiVersion: v1
