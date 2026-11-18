@@ -1,0 +1,22 @@
+# 맨 위 정보 줄. kubernetes 위젯은 01-rbac.yaml 의 읽기 전용 권한과 k3s 기본 metrics-server 를 쓴다.
+- kubernetes:
+    cluster:
+      show: true
+      cpu: true
+      memory: true
+      showLabel: true
+      label: k3s
+    nodes:
+      show: true
+      cpu: true
+      memory: true
+      showLabel: true
+- datetime:
+    text_size: md
+    format:
+      timeStyle: short
+      dateStyle: medium
+      hourCycle: h23
+- search:
+    provider: google
+    target: _blank

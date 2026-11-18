@@ -1,0 +1,5 @@
+# cluster = Pod 안의 ServiceAccount 로 클러스터를 읽는다.
+# ingress: false = Ingress 주석(gethomepage.dev/*) 자동 발견을 끈다. 켜려면 true 로 바꾸고 각 Ingress 에 주석을 단다.
+mode: cluster
+ingress: false
+traefik: false

@@ -1,0 +1,81 @@
+# 서비스 카드 목록. 공개 저장소라 공개 도메인만 적는다(내부 IP·클러스터 내부 주소·키는 넣지 않는다).
+# 위젯(살아있는지·숫자 표시)에 키가 필요하면 Secret 의 HOMEPAGE_VAR_xxx 를 {{HOMEPAGE_VAR_xxx}} 로 쓴다.
+# siteMonitor: 서버가 그 주소를 불러 응답 시간을 보여 준다(로그인 문 앞에서 302 가 와도 "살아있음"으로 본다).
+- 델브 업무:
+    - BBB:
+        href: https://bbb.delvrio.com
+        description: 중앙 운영 · AI
+        icon: mdi-robot-outline
+        siteMonitor: https://bbb.delvrio.com
+    - i3:
+        href: https://i3.delvrio.com
+        description: 투자 화면
+        icon: mdi-chart-line
+        siteMonitor: https://i3.delvrio.com
+    - SLP:
+        href: https://slp.delvrio.com
+        description: 운송내역 관리
+        icon: mdi-truck-outline
+        siteMonitor: https://slp.delvrio.com
+    - ccc:
+        href: https://ccc.delvrio.com
+        description: CSAP · AutoResearch · Agent
+        icon: mdi-shield-check-outline
+        siteMonitor: https://ccc.delvrio.com
+    - CRM:
+        href: https://crm.delvrio.com
+        description: TNC CRM
+        icon: mdi-account-group-outline
+    - Chat:
+        href: https://chat.delvrio.com
+        description: Rocket.Chat
+        icon: rocket-chat.png
+    - NextCloud:
+        href: https://nextcloud.delvrio.com
+        description: 파일 공유
+        icon: nextcloud.png
+
+- 운영 · 모니터링:
+    - Dashboard:
+        href: https://dashboard.delvrio.com
+        description: 예약 작업 · GPU · 운영
+        icon: mdi-view-dashboard-outline
+        siteMonitor: https://dashboard.delvrio.com
+    - Grafana:
+        href: https://grafana.delvrio.com
+        description: 그래프 · GPU 기록
+        icon: grafana.png
+    - Prometheus:
+        href: https://prometheus.delvrio.com
+        description: 지표 수집
+        icon: prometheus.png
+    - Kubernetes:
+        href: https://k8s.delvrio.com
+        description: Headlamp (회사에서만)
+        icon: kubernetes.png
+    - Flower:
+        href: https://flower.delvrio.com
+        description: Celery 작업 (11-27 까지)
+        icon: mdi-flower-outline
+    - Gitea:
+        href: https://gitea.delvrio.com
+        description: 빌드 · 배포
+        icon: gitea.png
+
+- AI · 개발:
+    - Dify:
+        href: https://dify.delvrio.com
+        description: AI 워크플로
+        icon: dify.png
+    - oMLX:
+        href: https://omlx.delvrio.com
+        description: 로컬 LLM 서버
+        icon: mdi-brain
+    - Odysseus:
+        href: https://odysseus.delvrio.com
+        description: AI 작업실
+        icon: mdi-sail-boat
+    - GitHub:
+        href: https://github.com/hyungjin7
+        description: 소스 정본
+        icon: github.png

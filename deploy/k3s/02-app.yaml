@@ -1,0 +1,110 @@
+# Homepage 본체. 원본 공식 이미지를 고정 태그로 쓴다(포크는 설정만 담는다).
+# 저장할 자료가 없어 DB·PVC 가 없다. 로그만 emptyDir(Pod 가 다시 뜨면 사라짐).
+# 버전 올리기: image 태그만 바꿔 다시 apply.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homepage
+  namespace: homepage
+  labels:
+    app.kubernetes.io/name: homepage
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: homepage
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: homepage
+    spec:
+      serviceAccountName: homepage
+      automountServiceAccountToken: true
+      enableServiceLinks: false
+      containers:
+      - name: homepage
+        image: ghcr.io/gethomepage/homepage:v2.8.0
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: [ALL]
+          runAsNonRoot: true
+          runAsUser: 1000
+          runAsGroup: 1000
+          seccompProfile:
+            type: RuntimeDefault
+        env:
+        - name: MY_POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        # 접속을 허락할 주소. 앞의 Pod IP 는 쿠버네티스 상태 점검(probe)용으로 꼭 필요하다.
+        - name: HOMEPAGE_ALLOWED_HOSTS
+          value: "$(MY_POD_IP):3000,homepage.delvrio.com"
+        # 로그인은 Traefik 문지기(델브 로그인, 03-sso-ingress.yaml)가 맡으므로 자체 로그인은 끈다.
+        - name: HOMEPAGE_AUTH_ENABLED
+          value: "false"
+        # 위젯 API 키 등 비밀 값: Secret homepage-secrets 의 HOMEPAGE_VAR_xxx 를 설정에서 {{HOMEPAGE_VAR_xxx}} 로 쓴다.
+        # Secret 이 없어도 뜬다(optional).
+        envFrom:
+        - secretRef:
+            name: homepage-secrets
+            optional: true
+        ports:
+        - name: http
+          containerPort: 3000
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /api/healthcheck
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /api/healthcheck
+            port: http
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        resources:
+          requests:
+            cpu: 50m
+            memory: 192Mi
+          limits:
+            cpu: "1"
+            memory: 512Mi
+        volumeMounts:
+        - {name: config, mountPath: /app/config/settings.yaml, subPath: settings.yaml}
+        - {name: config, mountPath: /app/config/services.yaml, subPath: services.yaml}
+        - {name: config, mountPath: /app/config/bookmarks.yaml, subPath: bookmarks.yaml}
+        - {name: config, mountPath: /app/config/widgets.yaml, subPath: widgets.yaml}
+        - {name: config, mountPath: /app/config/kubernetes.yaml, subPath: kubernetes.yaml}
+        - {name: config, mountPath: /app/config/docker.yaml, subPath: docker.yaml}
+        - {name: config, mountPath: /app/config/custom.css, subPath: custom.css}
+        - {name: config, mountPath: /app/config/custom.js, subPath: custom.js}
+        - {name: logs, mountPath: /app/config/logs}
+      volumes:
+      - name: config
+        configMap:
+          name: homepage-config
+      - name: logs
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: homepage
+  namespace: homepage
+  labels:
+    app.kubernetes.io/name: homepage
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: homepage
+  ports:
+  - name: http
+    port: 3000
+    targetPort: http
+    protocol: TCP

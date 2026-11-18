@@ -1,0 +1,16 @@
+# 화면 전체 설정. 항목: https://gethomepage.dev/configs/settings/
+title: Delvrio
+language: ko
+theme: dark
+color: slate
+headerStyle: clean
+layout:
+  델브 업무:
+    style: row
+    columns: 4
+  운영 · 모니터링:
+    style: row
+    columns: 4
+  AI · 개발:
+    style: row
+    columns: 4
