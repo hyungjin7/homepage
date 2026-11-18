@@ -16,12 +16,12 @@ MODE="${1:-preview}"
 CARDS='
 bbb.delvrio.com|/|BBB|델브 업무|mdi-robot-outline|중앙 운영 · AI|10|
 i3.delvrio.com|/|i3|델브 업무|mdi-chart-line|투자 화면|20|
-slp.delvrio.com|/|그린로직스|델브 업무|mdi-truck-outline|운송내역 관리 (SLP)|30|https://gl.delvrio.com
+slp.delvrio.com|/|그린로직스|고객|mdi-truck-outline|운송내역 관리 (SLP)|30|https://gl.delvrio.com
 ccc.delvrio.com|/|ccc|델브 업무|mdi-shield-check-outline|CSAP · AutoResearch · Agent|40|
 crm.delvrio.com|/|CRM|델브 업무|mdi-account-group-outline|TNC CRM|50|
 chat.delvrio.com|/|Chat|델브 업무|rocket-chat.png|Rocket.Chat|60|
 nextcloud.delvrio.com|/|NextCloud|델브 업무|nextcloud.png|파일 공유|70|
-suntax.delvrio.com|/|Suntax|델브 업무|mdi-calculator-variant-outline|세무 업무 (자체 로그인)|80|
+suntax.delvrio.com|/|Suntax|고객|mdi-calculator-variant-outline|세무 업무 (자체 로그인)|80|
 www.delvrio.com|/|홈페이지|델브 업무|mdi-web|Delve 회사 홈페이지|90|
 www.delvrio.com|/workspace.html|Workspace|델브 업무|mdi-link-variant|예전 사내 바로가기|91|https://www.delvrio.com/workspace.html
 dashboard.delvrio.com|/|Dashboard|운영 · 모니터링|mdi-view-dashboard-outline|예약 작업 · GPU · 운영|10|
