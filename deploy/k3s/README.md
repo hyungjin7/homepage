@@ -10,6 +10,7 @@
 | `01-rbac.yaml` | 쿠버네티스 위젯용 **읽기 전용** 권한(get/list 만) |
 | `02-app.yaml` | Deployment·Service(포트 3000). DB·PVC 없음. `/app/config` 는 쓰기 가능한 emptyDir 이고 시작할 때 ConfigMap 을 복사해 넣는다 |
 | `03-sso-ingress.yaml` | 델브 로그인(forwardAuth) + Ingress `homepage.delvrio.com`(letsencrypt-prod). 회사 전용 문(`homepage-lan`)은 만들어만 두고 꺼 둠 |
+| `ingress-cards.sh` | 기존 Ingress 에 Homepage 이름표를 붙인다(미리보기 기본, `--apply`, `--remove`) |
 | `config/*.yaml` | 화면 설정(서비스 카드·위젯·북마크). kustomize 가 ConfigMap 으로 만든다 |
 | `secrets.example.yaml` | 위젯 키 예시(적용 안 함) |
 
@@ -37,6 +38,22 @@ DNS 는 `*.delvrio.com` 와일드카드라 따로 할 일이 없다. 인증서�
   kubectl -n homepage rollout restart deploy/homepage
   ```
 - 이 저장소는 공개 포크라 **내부 IP·클러스터 내부 주소·키는 커밋하지 않는다.**
+
+## 카드 자동 등록 (Ingress 이름표)
+Homepage 는 이름표가 붙은 Ingress 를 스스로 찾아 카드로 만든다(`config/kubernetes.yaml` `ingress: true`). 이름표가 없는 Ingress 는 안 나온다.
+- 지금 있는 사이트: `bash deploy/k3s/ingress-cards.sh` 로 미리 보고 `--apply`. 주소+경로로 Ingress 를 찾으니 이름을 몰라도 된다. 표에 없거나 클러스터에 없는 주소는 "없음"으로 알려 준다.
+- **새 서비스 올리기**: 그 앱 Ingress 매니페스트 `metadata.annotations` 에 아래를 더하면 apply 하는 순간 카드가 생긴다.
+  ```yaml
+  gethomepage.dev/enabled: "true"
+  gethomepage.dev/external: "true"        # Pod 상태 표시 안 함(이름표 규칙이 앱마다 달라서)
+  gethomepage.dev/name: 새앱
+  gethomepage.dev/group: 델브 업무          # 델브 업무 | 운영 · 모니터링 | AI · 개발
+  gethomepage.dev/icon: mdi-apps           # https://pictogrammers.com/library/mdi/ 또는 xxx.png
+  gethomepage.dev/description: 한 줄 설명
+  gethomepage.dev/siteMonitor: https://새앱.delvrio.com
+  # 첫 화면 주소가 "/" 가 아니면: gethomepage.dev/href: https://새앱.delvrio.com/admin
+  ```
+- 클러스터 Ingress 가 없는 바깥 사이트(GitHub 등)만 `config/services.yaml` 에 적는다.
 
 ## 회사에서만 열기(선택)
 `03-sso-ingress.yaml` Ingress 의 `router.middlewares` 를

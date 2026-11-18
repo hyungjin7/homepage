@@ -1,5 +1,6 @@
 # cluster = Pod 안의 ServiceAccount 로 클러스터를 읽는다.
-# ingress: false = Ingress 주석(gethomepage.dev/*) 자동 발견을 끈다. 켜려면 true 로 바꾸고 각 Ingress 에 주석을 단다.
+# ingress: true = 이름표(gethomepage.dev/enabled: "true")가 붙은 Ingress 를 찾아 카드로 보여 준다.
+#   기존 Ingress 이름표: ingress-cards.sh --apply. 새 앱: 그 Ingress 매니페스트에 이름표를 단다(README).
 mode: cluster
-ingress: false
+ingress: true
 traefik: false
