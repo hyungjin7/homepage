@@ -1,0 +1,44 @@
+# 쿠버네티스 위젯(노드 CPU·메모리, Pod 상태)과 Ingress 자동 발견에 쓰는 "읽기 전용" 권한.
+# get/list 만 있고 바꾸거나 지우는 권한은 없다.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: homepage
+  namespace: homepage
+  labels:
+    app.kubernetes.io/name: homepage
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: homepage-readonly
+  labels:
+    app.kubernetes.io/name: homepage
+rules:
+- apiGroups: [""]
+  resources: [namespaces, pods, nodes]
+  verbs: [get, list]
+- apiGroups: [networking.k8s.io]
+  resources: [ingresses]
+  verbs: [get, list]
+- apiGroups: [traefik.io]
+  resources: [ingressroutes]
+  verbs: [get, list]
+- apiGroups: [metrics.k8s.io]
+  resources: [nodes, pods]
+  verbs: [get, list]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: homepage-readonly
+  labels:
+    app.kubernetes.io/name: homepage
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: homepage-readonly
+subjects:
+- kind: ServiceAccount
+  name: homepage
+  namespace: homepage
