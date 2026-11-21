@@ -32,13 +32,13 @@ gitea.delvrio.com|/|Gitea|운영 · 모니터링|gitea.png|빌드 · 배포|60|
 argocd.delvrio.com|/|Argo CD|운영 · 모니터링|argo-cd.png|배포 상태|70|
 netdata.delvrio.com|/|Netdata|운영 · 모니터링|netdata.png|서버 실시간 상태|80|
 sso.delvrio.com|/admin|Keycloak|운영 · 모니터링|keycloak.png|로그인 관리 (회사에서만)|90|https://sso.delvrio.com/admin/master/console/
-dify.delvrio.com|/|Dify|AI · 개발|dify.png|AI 워크플로|10|
+dify.delvrio.com|/|Dify|델브 업무|dify.png|AI 워크플로|100|
 omlx.delvrio.com|/|oMLX|AI · 개발|mdi-brain|로컬 LLM 서버|20|https://omlx.delvrio.com/admin
-odysseus.delvrio.com|/|Odysseus|AI · 개발|mdi-sail-boat|AI 작업실|30|
+odysseus.delvrio.com|/|Odysseus|델브 업무|mdi-sail-boat|AI 작업실|110|
 n8n.delvrio.com|/|n8n|AI · 개발|n8n.png|자동화 워크플로|40|
 ai.delvrio.com|/|Open WebUI|AI · 개발|open-webui.png|AI 채팅|50|
 openclaw.delvrio.com|/|OpenClaw|AI · 개발|mdi-robot-excited-outline|AI 에이전트|60|
-moa.delvrio.com|/|MoA|AI · 개발|mdi-book-open-page-variant-outline|설계 문서|70|
+moa.delvrio.com|/|MoA|델브 업무|mdi-book-open-page-variant-outline|설계 문서|120|
 mcp.delvrio.com|/youtube|MCP|AI · 개발|mdi-connection|MCP 서버 (YouTube 조회)|80|https://mcp.delvrio.com/youtube
 '
 

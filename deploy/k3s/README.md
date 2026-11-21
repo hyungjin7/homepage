@@ -55,6 +55,16 @@ Homepage 는 이름표가 붙은 Ingress 를 스스로 찾아 카드로 만든�
   ```
 - 클러스터 Ingress 가 없는 바깥 사이트(GitHub 등)만 `config/services.yaml` 에 적는다.
 
+## 화면 배치 고치기 (직접 편집)
+| 바꾸고 싶은 것 | 고칠 곳 | 적용 |
+|---|---|---|
+| 그룹 순서·열 수 | `config/settings.yaml` `layout` (적은 순서 = 위에서부터) | `kubectl apply -k deploy/k3s` |
+| 카드의 그룹·이름·아이콘·설명·순서 | `ingress-cards.sh` 표의 그 줄 (그룹 칸, 순서 칸 = 작을수록 앞) | `bash deploy/k3s/ingress-cards.sh --apply` |
+| 바깥 사이트 카드(GitHub 등) | `config/services.yaml` | `kubectl apply -k deploy/k3s` |
+
+- 새 그룹을 만들면 `settings.yaml` `layout` 에도 같은 이름을 적는다(글자·띄어쓰기까지 같아야 함). 카드가 0개인 그룹은 화면에 안 나온다.
+- 급할 때 한 장만: `kubectl -n <ns> annotate ingress <이름> --overwrite gethomepage.dev/group='델브 업무'` (표도 같이 고쳐 둔다. 안 그러면 다음 `--apply` 때 표 값으로 돌아감).
+
 ## 회사에서만 열기(선택)
 `03-sso-ingress.yaml` Ingress 의 `router.middlewares` 를
 `homepage-homepage-lan@kubernetescrd,homepage-homepage-sso@kubernetescrd` 로 바꾸고 다시 apply.

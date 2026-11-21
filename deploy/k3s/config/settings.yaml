@@ -4,11 +4,12 @@ language: ko
 theme: dark
 color: slate
 headerStyle: clean
+# 그룹은 아래 적은 순서대로 위에서부터 나온다. 카드가 없는 그룹은 화면에 안 나온다.
 layout:
-  델브 업무:
+  고객:
     style: row
     columns: 4
-  고객:
+  델브 업무:
     style: row
     columns: 4
   운영 · 모니터링:
