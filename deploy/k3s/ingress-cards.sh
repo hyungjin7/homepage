@@ -27,17 +27,14 @@ dashboard.delvrio.com|/|Dashboard|운영 · 모니터링|mdi-view-dashboard-outl
 grafana.delvrio.com|/|Grafana|운영 · 모니터링|grafana.png|그래프 · GPU 기록|20|
 prometheus.delvrio.com|/|Prometheus|운영 · 모니터링|prometheus.png|지표 수집|30|
 k8s.delvrio.com|/|Kubernetes|운영 · 모니터링|kubernetes.png|Headlamp (회사에서만)|40|
-flower.delvrio.com|/|Flower|운영 · 모니터링|mdi-flower-outline|Celery 작업 (11-27 까지)|50|
 gitea.delvrio.com|/|Gitea|운영 · 모니터링|gitea.png|빌드 · 배포|60|
 argocd.delvrio.com|/|Argo CD|운영 · 모니터링|argo-cd.png|배포 상태|70|
-netdata.delvrio.com|/|Netdata|운영 · 모니터링|netdata.png|서버 실시간 상태|80|
 sso.delvrio.com|/admin|Keycloak|운영 · 모니터링|keycloak.png|로그인 관리 (회사에서만)|90|https://sso.delvrio.com/admin/master/console/
 dify.delvrio.com|/|Dify|델브 업무|dify.png|AI 워크플로|100|
 omlx.delvrio.com|/|oMLX|AI · 개발|mdi-brain|로컬 LLM 서버|20|https://omlx.delvrio.com/admin
 odysseus.delvrio.com|/|Odysseus|델브 업무|mdi-sail-boat|AI 작업실|110|
 n8n.delvrio.com|/|n8n|AI · 개발|n8n.png|자동화 워크플로|40|
 ai.delvrio.com|/|Open WebUI|AI · 개발|open-webui.png|AI 채팅|50|
-openclaw.delvrio.com|/|OpenClaw|AI · 개발|mdi-robot-excited-outline|AI 에이전트|60|
 moa.delvrio.com|/|MoA|델브 업무|mdi-book-open-page-variant-outline|설계 문서|120|
 '
 
@@ -80,7 +77,7 @@ while IFS='|' read -r host path name group icon desc weight href; do
 done <<<"$CARDS"
 
 # 표에서 뺀 카드: 클러스터 Ingress 에 남은 이름표를 --apply 때 뗀다(카드 이름으로 찾음).
-REMOVED='Workspace MCP'
+REMOVED='Workspace MCP Netdata Flower OpenClaw'
 for gone in $REMOVED; do
   kubectl get ingress -A --no-headers \
     -o custom-columns='NS:.metadata.namespace,NAME:.metadata.name,CARD:.metadata.annotations.gethomepage\.dev/name' |
