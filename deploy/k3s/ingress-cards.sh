@@ -39,7 +39,6 @@ n8n.delvrio.com|/|n8n|AI · 개발|n8n.png|자동화 워크플로|40|
 ai.delvrio.com|/|Open WebUI|AI · 개발|open-webui.png|AI 채팅|50|
 openclaw.delvrio.com|/|OpenClaw|AI · 개발|mdi-robot-excited-outline|AI 에이전트|60|
 moa.delvrio.com|/|MoA|델브 업무|mdi-book-open-page-variant-outline|설계 문서|120|
-mcp.delvrio.com|/youtube|MCP|AI · 개발|mdi-connection|MCP 서버 (YouTube 조회)|80|https://mcp.delvrio.com/youtube
 '
 
 # 클러스터의 Ingress 를 "namespace 이름 주소 경로" 줄로 펼친다(규칙·경로마다 한 줄).
@@ -79,6 +78,23 @@ while IFS='|' read -r host path name group icon desc weight href; do
       echo "  미리보기 $name → $ns/$ing ($href)" ;;
   esac
 done <<<"$CARDS"
+
+# 표에서 뺀 카드: 클러스터 Ingress 에 남은 이름표를 --apply 때 뗀다(카드 이름으로 찾음).
+REMOVED='Workspace MCP'
+for gone in $REMOVED; do
+  kubectl get ingress -A --no-headers \
+    -o custom-columns='NS:.metadata.namespace,NAME:.metadata.name,CARD:.metadata.annotations.gethomepage\.dev/name' |
+  awk -v c="$gone" '$3==c {print $1" "$2}' | while read -r ns ing; do
+    if [ "$MODE" = "--apply" ] || [ "$MODE" = "--remove" ]; then
+      kubectl -n "$ns" annotate ingress "$ing" gethomepage.dev/enabled- gethomepage.dev/external- \
+        gethomepage.dev/name- gethomepage.dev/group- gethomepage.dev/icon- gethomepage.dev/description- \
+        gethomepage.dev/weight- gethomepage.dev/href- gethomepage.dev/siteMonitor- >/dev/null 2>&1 || true
+      echo "  뗌      $gone (표에서 뺀 카드) → $ns/$ing"
+    else
+      echo "  뗄 예정 $gone (표에서 뺀 카드) → $ns/$ing"
+    fi
+  done
+done
 
 echo "Ingress 를 못 찾은 카드: ${missing}개"
 [ "$MODE" = "preview" ] && echo "바꾸려면: bash $0 --apply"
