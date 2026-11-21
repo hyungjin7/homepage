@@ -18,11 +18,11 @@ bbb.delvrio.com|/|BBB|Develop|mdi-robot-outline|중앙 운영 · AI|10|
 i3.delvrio.com|/|i3|Develop|mdi-chart-line|투자 화면|20|
 slp.delvrio.com|/|그린로직스|Customer|mdi-truck-outline|운송내역 관리 (SLP)|30|https://gl.delvrio.com
 ccc.delvrio.com|/|ccc|Develop|mdi-shield-check-outline|CSAP · AutoResearch · Agent|40|
-crm.delvrio.com|/|CRM|Develop|mdi-account-group-outline|TNC CRM|50|
+crm.delvrio.com|/|CRM|Customer|mdi-account-group-outline|TNC CRM|50|
 chat.delvrio.com|/|Chat|Develop|rocket-chat.png|Rocket.Chat|60|
 nextcloud.delvrio.com|/|NextCloud|Develop|nextcloud.png|파일 공유|70|
 suntax.delvrio.com|/|Suntax|Customer|mdi-calculator-variant-outline|세무 업무 (자체 로그인)|80|
-www.delvrio.com|/|홈페이지|Develop|mdi-web|Delve 회사 홈페이지|90|
+www.delvrio.com|/|홈페이지|Customer|mdi-web|Delve 회사 홈페이지|90|
 dashboard.delvrio.com|/|Dashboard|Cloud|mdi-view-dashboard-outline|예약 작업 · GPU · 운영|10|
 grafana.delvrio.com|/|Grafana|Cloud|grafana.png|그래프 · GPU 기록|20|
 prometheus.delvrio.com|/|Prometheus|Cloud|prometheus.png|지표 수집|30|
