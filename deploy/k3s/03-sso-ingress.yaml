@@ -42,7 +42,7 @@ metadata:
     gethomepage.dev/enabled: "true"
     gethomepage.dev/external: "true"
     gethomepage.dev/name: Homepage
-    gethomepage.dev/group: 운영 · 모니터링
+    gethomepage.dev/group: Cloud
     gethomepage.dev/icon: homepage.png
     gethomepage.dev/description: 이 화면
     gethomepage.dev/weight: "99"

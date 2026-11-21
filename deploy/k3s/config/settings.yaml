@@ -6,15 +6,15 @@ color: slate
 headerStyle: clean
 # 그룹은 아래 적은 순서대로 위에서부터 나온다. 카드가 없는 그룹은 화면에 안 나온다.
 layout:
-  고객:
+  Customer:
     style: row
     columns: 4
-  델브 업무:
+  Develop:
     style: row
     columns: 4
-  운영 · 모니터링:
+  Cloud:
     style: row
     columns: 4
-  AI · 개발:
+  ai:
     style: row
     columns: 4

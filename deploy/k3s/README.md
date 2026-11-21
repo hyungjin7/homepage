@@ -47,7 +47,7 @@ Homepage 는 이름표가 붙은 Ingress 를 스스로 찾아 카드로 만든�
   gethomepage.dev/enabled: "true"
   gethomepage.dev/external: "true"        # Pod 상태 표시 안 함(이름표 규칙이 앱마다 달라서)
   gethomepage.dev/name: 새앱
-  gethomepage.dev/group: 델브 업무          # 델브 업무 | 고객 | 운영 · 모니터링 | AI · 개발
+  gethomepage.dev/group: Develop           # Customer | Develop | Cloud | ai
   gethomepage.dev/icon: mdi-apps           # https://pictogrammers.com/library/mdi/ 또는 xxx.png
   gethomepage.dev/description: 한 줄 설명
   gethomepage.dev/siteMonitor: https://새앱.delvrio.com
@@ -63,7 +63,7 @@ Homepage 는 이름표가 붙은 Ingress 를 스스로 찾아 카드로 만든�
 | 바깥 사이트 카드(GitHub 등) | `config/services.yaml` | `kubectl apply -k deploy/k3s` |
 
 - 새 그룹을 만들면 `settings.yaml` `layout` 에도 같은 이름을 적는다(글자·띄어쓰기까지 같아야 함). 카드가 0개인 그룹은 화면에 안 나온다.
-- 급할 때 한 장만: `kubectl -n <ns> annotate ingress <이름> --overwrite gethomepage.dev/group='델브 업무'` (표도 같이 고쳐 둔다. 안 그러면 다음 `--apply` 때 표 값으로 돌아감).
+- 급할 때 한 장만: `kubectl -n <ns> annotate ingress <이름> --overwrite gethomepage.dev/group=Develop` (표도 같이 고쳐 둔다. 안 그러면 다음 `--apply` 때 표 값으로 돌아감).
 
 ## 회사에서만 열기(선택)
 `03-sso-ingress.yaml` Ingress 의 `router.middlewares` 를
