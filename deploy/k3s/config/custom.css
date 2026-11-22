@@ -1,1 +1,43 @@
-/* 화면 꾸미기용 CSS(비워 둠) */
+/* 화면 꾸미기용 CSS. 아래는 "배치 편집"(custom.js) 버튼·편집 표시만 — 평소 화면 모양은 바꾸지 않음. 색은 Homepage 테마 색(--color-*)을 씀 */
+#dlv-order-bar {
+  position: fixed;
+  right: 12px;
+  bottom: 12px;
+  z-index: 50;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  font-size: 12px;
+  color: rgb(var(--color-200));
+}
+#dlv-order-bar span {
+  padding: 0 4px;
+  opacity: 0.8;
+}
+#dlv-order-bar button {
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: rgb(var(--color-700) / 0.7);
+  color: rgb(var(--color-200));
+  border: 1px solid rgb(var(--color-600) / 0.6);
+  cursor: pointer;
+  opacity: 0.55;
+}
+#dlv-order-bar button:hover,
+.dlv-editing #dlv-order-bar button {
+  opacity: 1;
+}
+.dlv-editing .services-group[draggable] {
+  outline: 1px dashed rgb(var(--color-500) / 0.6);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+.dlv-editing .service[draggable] {
+  cursor: grab;
+}
+.dlv-editing .service[draggable] .service-card {
+  outline: 1px dashed rgb(var(--color-400) / 0.7);
+}
+.dlv-dragging {
+  opacity: 0.4;
+}
