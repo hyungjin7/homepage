@@ -19,7 +19,7 @@ i3.delvrio.com|/|i3|Develop|mdi-chart-line|투자 화면|20|
 slp.delvrio.com|/|그린로직스|Customer|mdi-truck-outline|운송내역 관리 (SLP)|30|https://gl.delvrio.com
 ccc.delvrio.com|/|ccc|Develop|mdi-shield-check-outline|CSAP · AutoResearch · Agent|40|
 crm.delvrio.com|/|CRM|Customer|mdi-account-group-outline|TNC CRM|50|
-chat.delvrio.com|/|Chat|Develop|rocket-chat.png|Rocket.Chat|60|
+chat.delvrio.com|/|Chat|Develop|rocket-chat.png|Rocket.Chat · SSO 바로 연결|60|https://chat.delvrio.com/oauth/keycloak
 nextcloud.delvrio.com|/|NextCloud|Develop|nextcloud.png|파일 공유|70|
 suntax.delvrio.com|/|Suntax|Customer|mdi-calculator-variant-outline|세무 업무 (자체 로그인)|80|
 www.delvrio.com|/|홈페이지|Customer|mdi-web|Delve 회사 홈페이지|90|
@@ -30,7 +30,7 @@ k8s.delvrio.com|/|Kubernetes|Cloud|kubernetes.png|Headlamp (회사에서만)|40|
 gitea.delvrio.com|/|Gitea|Cloud|gitea.png|빌드 · 배포|60|
 argocd.delvrio.com|/|Argo CD|Cloud|argo-cd.png|배포 상태|70|
 sso.delvrio.com|/admin|Keycloak|Cloud|keycloak.png|로그인 관리 (회사에서만)|90|https://sso.delvrio.com/admin/master/console/
-dify.delvrio.com|/|Dify|Develop|dify.png|AI 워크플로|100|
+dify.delvrio.com|/|Dify|Develop|dify.png|AI 워크플로 · SSO 안됨(자체 로그인)|100|
 omlx.delvrio.com|/|oMLX|ai|mdi-brain|로컬 LLM 서버|20|https://omlx.delvrio.com/admin
 odysseus.delvrio.com|/|Odysseus|Develop|mdi-sail-boat|AI 작업실|110|
 n8n.delvrio.com|/|n8n|ai|n8n.png|자동화 워크플로|40|
@@ -58,13 +58,16 @@ while IFS='|' read -r host path name group icon desc weight href; do
   case "$used" in *" $ns/$ing "*) echo "  건너뜀  $name — $ns/$ing 는 이미 다른 카드에 씀"; continue ;; esac
   used="$used$ns/$ing "
   [ -z "$href" ] && href="https://$host"
+  # Health checks must not start OAuth transactions.
+  monitor="$href"
+  if [ "$host" = "chat.delvrio.com" ]; then monitor="https://$host"; fi
   case "$MODE" in
     --apply)
       kubectl -n "$ns" annotate ingress "$ing" --overwrite \
         gethomepage.dev/enabled=true gethomepage.dev/external=true \
         gethomepage.dev/name="$name" gethomepage.dev/group="$group" gethomepage.dev/icon="$icon" \
         gethomepage.dev/description="$desc" gethomepage.dev/weight="$weight" \
-        gethomepage.dev/href="$href" gethomepage.dev/siteMonitor="$href" >/dev/null
+        gethomepage.dev/href="$href" gethomepage.dev/siteMonitor="$monitor" >/dev/null
       echo "  붙임    $name → $ns/$ing" ;;
     --remove)
       kubectl -n "$ns" annotate ingress "$ing" gethomepage.dev/enabled- gethomepage.dev/external- \

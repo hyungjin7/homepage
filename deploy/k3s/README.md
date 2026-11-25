@@ -78,3 +78,10 @@ Homepage 는 이름표가 붙은 Ingress 를 스스로 찾아 카드로 만든�
 kubectl delete -k homepage/deploy/k3s
 ```
 Traefik 진입 설정(HelmChartConfig 등)은 건드리지 않는다. Middleware·Ingress 만 더하고 지운다.
+
+
+### Develop SSO 진입 (2026-11-25, AI 도움으로 수정)
+
+Chat 카드는 Rocket.Chat 공식 `/oauth/keycloak` 진입점을 사용한다. 기존 Keycloak 세션으로 로그인하며,
+직접 `/` 주소를 열면 제품의 로그인 버튼이 표시될 수 있다. 상태 점검(siteMonitor)은 `/`를 사용해
+OAuth 요청을 반복 생성하지 않는다. Dify 현재 설치본은 자체 로그인으로 SSO 안됨을 카드에 표시한다.
