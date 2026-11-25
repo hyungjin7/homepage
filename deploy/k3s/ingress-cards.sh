@@ -26,7 +26,7 @@ ccc.delvrio.com|/|ccc|Develop|mdi-shield-check-outline|CSAP · AutoResearch · A
 chat.delvrio.com|/|Chat|Develop|rocket-chat.png|Rocket.Chat · SSO 바로 연결|30|https://chat.delvrio.com/oauth/keycloak
 dashboard.delvrio.com|/|Dashboard|Develop|mdi-view-dashboard-outline|예약 작업 · GPU · 운영|40|
 dify.delvrio.com|/|Dify|Develop|dify.png|AI 워크플로 · SSO 안됨(자체 로그인)|50|
-i3.delvrio.com|/|i3|Develop|mdi-chart-line|투자 화면|60|
+i3.delvrio.com|/|iii|Develop|mdi-chart-line|투자 화면|60|
 moa.delvrio.com|/|MoA|Develop|mdi-book-open-page-variant-outline|설계 문서|70|
 nextcloud.delvrio.com|/|NextCloud|Develop|nextcloud.png|파일 공유|80|
 odysseus.delvrio.com|/|Odysseus|Develop|mdi-sail-boat|AI 작업실|90|
