@@ -6,7 +6,7 @@
   if (window.__dlvOrder) return;
   window.__dlvOrder = true;
 
-  var KEY = "dlv-homepage-order-v1";
+  var KEY = "dlv-homepage-order-v2";
   var editing = false;
   var dragEl = null;
 

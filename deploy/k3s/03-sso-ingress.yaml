@@ -42,10 +42,10 @@ metadata:
     gethomepage.dev/enabled: "true"
     gethomepage.dev/external: "true"
     gethomepage.dev/name: Homepage
-    gethomepage.dev/group: Cloud
+    gethomepage.dev/group: Customer
     gethomepage.dev/icon: homepage.png
     gethomepage.dev/description: 이 화면
-    gethomepage.dev/weight: "99"
+    gethomepage.dev/weight: "10"
 spec:
   ingressClassName: traefik
   tls:

@@ -13,29 +13,32 @@ set -euo pipefail
 MODE="${1:-preview}"
 
 # 주소|찾을 경로|카드 이름|그룹|아이콘|설명|순서|열 주소(비우면 https://주소)
+# 그룹 순서 Customer → Develop → Cloud → Link, 그룹 안 순서 = 순서 칸(작을수록 앞). GitHub(Link 20)는 config/services.yaml.
 CARDS='
-bbb.delvrio.com|/|BBB|Develop|mdi-robot-outline|중앙 운영 · AI|10|
-i3.delvrio.com|/|i3|Develop|mdi-chart-line|투자 화면|20|
+homepage.delvrio.com|/|Homepage|Customer|homepage.png|이 화면|10|
+bible.delvrio.com|/|말씀 스와이프|Customer|mdi-book-open-variant|틱톡처럼 넘겨 보는 성경 (개역한글)|20|
 slp.delvrio.com|/|그린로직스|Customer|mdi-truck-outline|운송내역 관리 (SLP)|30|https://gl.delvrio.com
-ccc.delvrio.com|/|ccc|Develop|mdi-shield-check-outline|CSAP · AutoResearch · Agent|40|
-crm.delvrio.com|/|CRM|Customer|mdi-account-group-outline|TNC CRM|50|
-chat.delvrio.com|/|Chat|Develop|rocket-chat.png|Rocket.Chat · SSO 바로 연결|60|https://chat.delvrio.com/oauth/keycloak
-nextcloud.delvrio.com|/|NextCloud|Develop|nextcloud.png|파일 공유|70|
-suntax.delvrio.com|/|Suntax|Customer|mdi-calculator-variant-outline|세무 업무 (자체 로그인)|80|
-www.delvrio.com|/|홈페이지|Customer|mdi-web|Delve 회사 홈페이지|90|
-dashboard.delvrio.com|/|Dashboard|Cloud|mdi-view-dashboard-outline|예약 작업 · GPU · 운영|10|
-grafana.delvrio.com|/|Grafana|Cloud|grafana.png|그래프 · GPU 기록|20|
-prometheus.delvrio.com|/|Prometheus|Cloud|prometheus.png|지표 수집|30|
-k8s.delvrio.com|/|Kubernetes|Cloud|kubernetes.png|Headlamp (회사에서만)|40|
-gitea.delvrio.com|/|Gitea|Cloud|gitea.png|빌드 · 배포|60|
-argocd.delvrio.com|/|Argo CD|Cloud|argo-cd.png|배포 상태|70|
-sso.delvrio.com|/admin|Keycloak|Cloud|keycloak.png|로그인 관리 (회사에서만)|90|https://sso.delvrio.com/admin/master/console/
-dify.delvrio.com|/|Dify|Develop|dify.png|AI 워크플로 · SSO 안됨(자체 로그인)|100|
-omlx.delvrio.com|/|oMLX|ai|mdi-brain|로컬 LLM 서버|20|https://omlx.delvrio.com/admin
-odysseus.delvrio.com|/|Odysseus|Develop|mdi-sail-boat|AI 작업실|110|
-n8n.delvrio.com|/|n8n|ai|n8n.png|자동화 워크플로|40|
-ai.delvrio.com|/|Open WebUI|ai|open-webui.png|AI 채팅|50|
-moa.delvrio.com|/|MoA|Develop|mdi-book-open-page-variant-outline|설계 문서|120|
+crm.delvrio.com|/|CRM|Customer|mdi-account-group-outline|TNC CRM|40|
+suntax.delvrio.com|/|Suntax|Customer|mdi-calculator-variant-outline|세무 업무 (자체 로그인)|50|
+www.delvrio.com|/|홈페이지|Customer|mdi-web|Delve 회사 홈페이지|60|
+bbb.delvrio.com|/|bbb|Develop|mdi-robot-outline|중앙 운영 · AI|10|
+ccc.delvrio.com|/|ccc|Develop|mdi-shield-check-outline|CSAP · AutoResearch · Agent|20|
+chat.delvrio.com|/|Chat|Develop|rocket-chat.png|Rocket.Chat · SSO 바로 연결|30|https://chat.delvrio.com/oauth/keycloak
+dashboard.delvrio.com|/|Dashboard|Develop|mdi-view-dashboard-outline|예약 작업 · GPU · 운영|40|
+dify.delvrio.com|/|Dify|Develop|dify.png|AI 워크플로 · SSO 안됨(자체 로그인)|50|
+i3.delvrio.com|/|i3|Develop|mdi-chart-line|투자 화면|60|
+moa.delvrio.com|/|MoA|Develop|mdi-book-open-page-variant-outline|설계 문서|70|
+nextcloud.delvrio.com|/|NextCloud|Develop|nextcloud.png|파일 공유|80|
+odysseus.delvrio.com|/|Odysseus|Develop|mdi-sail-boat|AI 작업실|90|
+n8n.delvrio.com|/|n8n|Develop|n8n.png|자동화 워크플로|100|
+grafana.delvrio.com|/|Grafana|Cloud|grafana.png|그래프 · GPU 기록|10|
+prometheus.delvrio.com|/|Prometheus|Cloud|prometheus.png|지표 수집|20|
+k8s.delvrio.com|/|Kubernetes|Cloud|kubernetes.png|Headlamp (회사에서만)|30|
+gitea.delvrio.com|/|Gitea|Cloud|gitea.png|빌드 · 배포|40|
+argocd.delvrio.com|/|Argo CD|Cloud|argo-cd.png|배포 상태|50|
+sso.delvrio.com|/admin|Keycloak|Cloud|keycloak.png|로그인 관리 (회사에서만)|60|https://sso.delvrio.com/admin/master/console/
+ai.delvrio.com|/|Open WebUI|Link|open-webui.png|AI 채팅 · 삭제 예정|10|
+omlx.delvrio.com|/|oMLX|Link|mdi-brain|로컬 LLM 서버|30|https://omlx.delvrio.com/admin
 '
 
 # 클러스터의 Ingress 를 "namespace 이름 주소 경로" 줄로 펼친다(규칙·경로마다 한 줄).
