@@ -28,6 +28,12 @@ kubectl -n homepage rollout status deploy/homepage
 ```
 DNS 는 `*.delvrio.com` 와일드카드라 따로 할 일이 없다. 인증서는 cert-manager 가 몇 분 안에 발급한다(`kubectl -n homepage get certificate`).
 
+## 자동 배포 (2026-11-26~)
+GitHub `dev` 에 합치면 `.github/workflows/sync-to-gitea.yml` 이 Gitea `hyungjin7/homepage` `dev` 로 넘기고, Gitea CI(`.gitea/workflows/ci.yml`)가
+`kubectl apply -k deploy/k3s` 와 `ingress-cards.sh --apply` 를 한다. 이미지는 공식 이미지라 빌드하지 않는다.
+- 처음 한 번: GitHub 포크 Settings › Secrets › Actions 에 `GITEA_USER`·`GITEA_TOKEN`, 포크의 Actions 켜기. Gitea 저장소의 Actions 켜기.
+- Secret `homepage-secrets`(키 값)는 CI 가 만들지 않는다. 사람이 kubectl 로 넣는다.
+
 ## 설정 바꾸기
 `config/*.yaml` 을 고치고 같은 `kubectl apply -k` 를 다시 하면 Pod 가 저절로 새로 뜬다.
 - 서비스 카드: `config/services.yaml` · 안내 https://gethomepage.dev/configs/services/
