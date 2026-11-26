@@ -13,12 +13,12 @@ set -euo pipefail
 MODE="${1:-preview}"
 
 # 주소|찾을 경로|카드 이름|그룹|아이콘|설명|순서|열 주소(비우면 https://주소)
-# 그룹 순서 Customer → Develop → Cloud, 그룹 안 순서 = 순서 칸(작을수록 앞). Link(옛 ai) 그룹은 2026-11-26 사용자 지시로 없애고 카드를 Cloud 로 옮김. GitHub(Cloud 45, Gitea 뒤)는 config/services.yaml.
+# 그룹 순서 Customer → Develop → Cloud → Link, 그룹 안 순서 = 순서 칸(작을수록 앞). Link = Open WebUI·oMLX(2026-11-26 사용자 지시로 되살림). GitHub(Cloud 45, Gitea 뒤)는 config/services.yaml.
 CARDS='
-bible.delvrio.com|/|성경 스와이프|Customer|mdi-book-open-variant|틱톡처럼 넘겨보는 성경|20|
+bible.delvrio.com|/|성경 스와이프|Customer|mdi-book-open-variant|틱톡처럼 넘겨보는 성경|70|
 slp.delvrio.com|/|그린로직스|Customer|mdi-truck-outline|운송내역 관리 (SLP)|5|https://gl.delvrio.com
 suntax.delvrio.com|/|Suntax|Customer|mdi-calculator-variant-outline|세무 업무 (자체 로그인)|50|
-www.delvrio.com|/|홈페이지|Customer|mdi-web|Delve 회사 홈페이지|60|
+www.delvrio.com|/|델브홈페이지|Customer|mdi-web|Delve 회사 홈페이지|60|
 bbb.delvrio.com|/|bbb|Develop|mdi-robot-outline|중앙 운영 · AI|10|
 ccc.delvrio.com|/|ccc|Develop|mdi-shield-check-outline|CSAP · AutoResearch · Agent|20|
 chat.delvrio.com|/|Chat|Develop|rocket-chat.png|Rocket.Chat · SSO 바로 연결|30|https://chat.delvrio.com/oauth/keycloak
@@ -35,8 +35,8 @@ k8s.delvrio.com|/|Kubernetes|Cloud|kubernetes.png|Headlamp (회사에서만)|30|
 gitea.delvrio.com|/|Gitea|Cloud|gitea.png|빌드 · 배포|40|
 argocd.delvrio.com|/|Argo CD|Cloud|argo-cd.png|배포 상태|50|
 sso.delvrio.com|/admin|Keycloak|Cloud|keycloak.png|로그인 관리 (회사에서만)|60|https://sso.delvrio.com/admin/master/console/
-ai.delvrio.com|/|Open WebUI|Cloud|open-webui.png|AI 채팅 · 삭제 예정|80|
-omlx.delvrio.com|/|oMLX|Cloud|mdi-brain|로컬 LLM 서버|90|https://omlx.delvrio.com/admin
+ai.delvrio.com|/|Open WebUI|Link|open-webui.png|AI 채팅 · 삭제 예정|10|
+omlx.delvrio.com|/|oMLX|Link|mdi-brain|로컬 LLM 서버|20|https://omlx.delvrio.com/admin
 '
 
 # 카드 안 위젯(앱 지표). 주소|위젯 종류|위젯 url|키 이름(Secret homepage-secrets 의 HOMEPAGE_VAR_…)
