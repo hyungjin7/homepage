@@ -15,7 +15,7 @@ MODE="${1:-preview}"
 # 주소|찾을 경로|카드 이름|그룹|아이콘|설명|순서|열 주소(비우면 https://주소)
 # 그룹 순서 Customer → Develop → Cloud, 그룹 안 순서 = 순서 칸(작을수록 앞). Link(옛 ai) 그룹은 2026-11-26 사용자 지시로 없애고 카드를 Cloud 로 옮김. GitHub(Cloud 45, Gitea 뒤)는 config/services.yaml.
 CARDS='
-bible.delvrio.com|/|말씀 스와이프|Customer|mdi-book-open-variant|틱톡처럼 넘겨 보는 성경 (개역한글)|20|
+bible.delvrio.com|/|성경 스와이프|Customer|mdi-book-open-variant|틱톡처럼 넘겨보는 성경|20|
 slp.delvrio.com|/|그린로직스|Customer|mdi-truck-outline|운송내역 관리 (SLP)|5|https://gl.delvrio.com
 suntax.delvrio.com|/|Suntax|Customer|mdi-calculator-variant-outline|세무 업무 (자체 로그인)|50|
 www.delvrio.com|/|홈페이지|Customer|mdi-web|Delve 회사 홈페이지|60|
