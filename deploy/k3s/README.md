@@ -32,6 +32,7 @@ DNS 는 `*.delvrio.com` 와일드카드라 따로 할 일이 없다. 인증서�
 GitHub `dev` 에 합치면 `.github/workflows/sync-to-gitea.yml` 이 Gitea `hyungjin7/homepage` `dev` 로 넘기고, Gitea CI(`.gitea/workflows/ci.yml`)가
 `kubectl apply -k deploy/k3s` 와 `ingress-cards.sh --apply` 를 한다. 이미지는 공식 이미지라 빌드하지 않는다.
 - 처음 한 번: GitHub 포크 Settings › Secrets › Actions 에 `GITEA_USER`·`GITEA_TOKEN`, 포크의 Actions 켜기. Gitea 저장소의 Actions 켜기.
+- 포크 원본(gethomepage)의 GitHub 작업(test·lint·docker-publish·Codecov 등)은 2026-11-26 지웠다. 우리는 빌드·시험을 하지 않고 설정만 배포한다. 원본을 다시 합칠 때 그 파일들이 되살아나면 다시 지운다.
 - Secret `homepage-secrets`(키 값)는 CI 가 만들지 않는다. 사람이 kubectl 로 넣는다.
 
 ## 설정 바꾸기
