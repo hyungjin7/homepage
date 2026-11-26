@@ -11,6 +11,14 @@
       cpu: true
       memory: true
       showLabel: true
+# 인천 날씨(OpenMeteo, 키 필요 없음). 2026-11-26 사용자 요청
+- openmeteo:
+    label: 인천
+    latitude: 37.4563
+    longitude: 126.7052
+    timezone: Asia/Seoul
+    units: metric
+    cache: 5
 - datetime:
     text_size: md
     format:

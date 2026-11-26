@@ -55,6 +55,19 @@ Homepage 는 이름표가 붙은 Ingress 를 스스로 찾아 카드로 만든�
   ```
 - 클러스터 Ingress 가 없는 바깥 사이트(GitHub 등)만 `config/services.yaml` 에 적는다.
 
+## 카드 위젯 · 날씨 (2026-11-26)
+- 날씨: 맨 위 줄 "인천"(OpenMeteo, `config/widgets.yaml`). 키 필요 없음.
+- GPU 카드(Cloud): `config/services.yaml` 의 Prometheus 지표 4개(studio 온도·전력, alpha-98 온도·사용률). Secret 에 `HOMEPAGE_VAR_PROMETHEUS_URL`(클러스터 안 Prometheus 주소) 필요.
+- Argo CD·Gitea 카드 안 숫자: `ingress-cards.sh` 의 `WIDGETS` 표. Secret 에 키가 있을 때만 `--apply` 가 위젯을 붙인다.
+
+| Secret 키 | 값 |
+|---|---|
+| `HOMEPAGE_VAR_PROMETHEUS_URL` | 클러스터 안 Prometheus 주소(bbb `services/rag` 의 `RAG_PROMETHEUS_URL` 과 같은 값) |
+| `HOMEPAGE_VAR_ARGOCD_KEY` | Argo CD 읽기 전용 계정 `homepage` 의 API 토큰 |
+| `HOMEPAGE_VAR_GITEA_KEY` | Gitea 토큰(read: repository·issue·notification) |
+
+Secret 은 `kubectl -n homepage patch secret homepage-secrets --type merge -p '{"stringData":{"키":"값"}}'`(없으면 `create secret generic`)로 넣고 `kubectl -n homepage rollout restart deploy/homepage`.
+
 ## 화면 배치 고치기 (직접 편집)
 | 바꾸고 싶은 것 | 고칠 곳 | 적용 |
 |---|---|---|
