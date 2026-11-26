@@ -41,3 +41,12 @@
 .dlv-dragging {
   opacity: 0.4;
 }
+
+/* 맨 위 정보 줄(2026-11-26 사용자 요청): 칸이 좁으면 날짜·검색·날씨 묶음을 줄이지 않고 통째로 다음 줄로 넘긴다.
+   왼쪽(쿠버네티스·GPU)은 그대로 첫 줄에 남는다. 휴대폰처럼 더 좁으면 묶음 안에서 다시 줄을 바꾼다. */
+#information-widgets-right {
+  flex: 1 0 auto;
+}
+#information-widgets-right > * {
+  flex-shrink: 0;
+}

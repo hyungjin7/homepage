@@ -11,6 +11,31 @@
       cpu: true
       memory: true
       showLabel: true
+# GPU 지금 값(쿠버네티스 서버 정보 오른쪽, 2026-11-26 사용자 요청). Prometheus 질의 1번으로 4개 값을 받는다.
+# 주소는 Secret 의 HOMEPAGE_VAR_PROMETHEUS_URL(공개 저장소라 내부 주소를 쓰지 않음). 값이 없으면 -1 로 나온다.
+# 질의(풀어 쓴 것): label_replace(max(mac_gpu_temp_celsius{host="studio"}) or vector(-1), "k", "1", "", "") or label_replace(max(mac_gpu_power_watts{host="studio"}) or vector(-1), "k", "2", "", "") or label_replace(max(nvidia_smi_temperature_gpu{host="alpha-98"}) or vector(-1), "k", "3", "", "") or label_replace(max(nvidia_smi_utilization_gpu_ratio{host="alpha-98"} * 100) or vector(-1), "k", "4", "", "")
+- customapi:
+    url: "{{HOMEPAGE_VAR_PROMETHEUS_URL}}/api/v1/query?query=label_replace%28max%28mac_gpu_temp_celsius%7Bhost%3D%22studio%22%7D%29%20or%20vector%28-1%29%2C%20%22k%22%2C%20%221%22%2C%20%22%22%2C%20%22%22%29%20or%20label_replace%28max%28mac_gpu_power_watts%7Bhost%3D%22studio%22%7D%29%20or%20vector%28-1%29%2C%20%22k%22%2C%20%222%22%2C%20%22%22%2C%20%22%22%29%20or%20label_replace%28max%28nvidia_smi_temperature_gpu%7Bhost%3D%22alpha-98%22%7D%29%20or%20vector%28-1%29%2C%20%22k%22%2C%20%223%22%2C%20%22%22%2C%20%22%22%29%20or%20label_replace%28max%28nvidia_smi_utilization_gpu_ratio%7Bhost%3D%22alpha-98%22%7D%20%2A%20100%29%20or%20vector%28-1%29%2C%20%22k%22%2C%20%224%22%2C%20%22%22%2C%20%22%22%29"
+    icon: mdi-expansion-card
+    label: GPU
+    refreshInterval: 15000
+    mappings:
+      - field: data.result.0.value.1
+        label: studio 온도
+        format: number
+        suffix: "℃"
+      - field: data.result.1.value.1
+        label: studio 전력
+        format: float
+        suffix: W
+      - field: data.result.2.value.1
+        label: alpha-98 온도
+        format: number
+        suffix: "℃"
+      - field: data.result.3.value.1
+        label: alpha-98 사용률
+        format: number
+        suffix: "%"
 - datetime:
     text_size: md
     format:
