@@ -39,6 +39,34 @@ ai.delvrio.com|/|Open WebUI|Cloud|open-webui.png|AI 채팅 · 삭제 예정|80|
 omlx.delvrio.com|/|oMLX|Cloud|mdi-brain|로컬 LLM 서버|90|https://omlx.delvrio.com/admin
 '
 
+# 카드 안 위젯(앱 지표). 주소|위젯 종류|위젯 url|키 이름(Secret homepage-secrets 의 HOMEPAGE_VAR_…)
+# 키가 Secret 에 있을 때만 위젯을 붙이고, 없으면 뗀다(키 없이 붙이면 카드에 오류가 보임). 키 값은 파일에 쓰지 않는다(공개 저장소).
+# 만드는 법: README "카드 위젯".
+WIDGETS='
+argocd.delvrio.com|argocd|https://argocd.delvrio.com|HOMEPAGE_VAR_ARGOCD_KEY
+gitea.delvrio.com|gitea|https://gitea.delvrio.com|HOMEPAGE_VAR_GITEA_KEY
+'
+has_key() {
+  [ -n "$(kubectl -n homepage get secret homepage-secrets -o jsonpath="{.data.$1}" 2>/dev/null)" ]
+}
+card_widget() {
+  local host="$1" ns="$2" ing="$3" mode="$4" line wtype wurl wkey
+  line=$(awk -F'|' -v h="$host" '$1==h {print; exit}' <<<"$WIDGETS")
+  [ -z "$line" ] && return 0
+  IFS='|' read -r _ wtype wurl wkey <<<"$line"
+  if [ "$mode" = "--apply" ] && has_key "$wkey"; then
+    kubectl -n "$ns" annotate ingress "$ing" --overwrite gethomepage.dev/widget.type="$wtype" \
+      gethomepage.dev/widget.url="$wurl" gethomepage.dev/widget.key="{{${wkey}}}" >/dev/null
+    echo "          위젯 $wtype 붙임"
+  elif [ "$mode" = "--apply" ] || [ "$mode" = "--remove" ]; then
+    kubectl -n "$ns" annotate ingress "$ing" gethomepage.dev/widget.type- gethomepage.dev/widget.url- \
+      gethomepage.dev/widget.key- >/dev/null 2>&1 || true
+    [ "$mode" = "--apply" ] && echo "          위젯 $wtype 안 붙임 — Secret homepage-secrets 에 $wkey 가 없음"
+  else
+    if has_key "$wkey"; then echo "          위젯 $wtype 붙일 예정"; else echo "          위젯 $wtype 키 없음($wkey)"; fi
+  fi
+}
+
 # 클러스터의 Ingress 를 "namespace 이름 주소 경로" 줄로 펼친다(규칙·경로마다 한 줄).
 LIST=$(kubectl get ingress -A -o go-template='{{range $i := .items}}{{range $r := $i.spec.rules}}{{if $r.http}}{{range $p := $r.http.paths}}{{$i.metadata.namespace}} {{$i.metadata.name}} {{$r.host}} {{$p.path}}{{"\n"}}{{end}}{{end}}{{end}}{{end}}')
 
@@ -69,14 +97,17 @@ while IFS='|' read -r host path name group icon desc weight href; do
         gethomepage.dev/name="$name" gethomepage.dev/group="$group" gethomepage.dev/icon="$icon" \
         gethomepage.dev/description="$desc" gethomepage.dev/weight="$weight" \
         gethomepage.dev/href="$href" gethomepage.dev/siteMonitor="$monitor" >/dev/null
-      echo "  붙임    $name → $ns/$ing" ;;
+      echo "  붙임    $name → $ns/$ing"
+      card_widget "$host" "$ns" "$ing" --apply ;;
     --remove)
       kubectl -n "$ns" annotate ingress "$ing" gethomepage.dev/enabled- gethomepage.dev/external- \
         gethomepage.dev/name- gethomepage.dev/group- gethomepage.dev/icon- gethomepage.dev/description- \
         gethomepage.dev/weight- gethomepage.dev/href- gethomepage.dev/siteMonitor- >/dev/null 2>&1 || true
-      echo "  뗌      $name → $ns/$ing" ;;
+      echo "  뗌      $name → $ns/$ing"
+      card_widget "$host" "$ns" "$ing" --remove ;;
     *)
-      echo "  미리보기 $name → $ns/$ing ($href)" ;;
+      echo "  미리보기 $name → $ns/$ing ($href)"
+      card_widget "$host" "$ns" "$ing" preview ;;
   esac
 done <<<"$CARDS"
 
