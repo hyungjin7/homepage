@@ -1,8 +1,9 @@
 # 카드는 대부분 Ingress 이름표로 자동으로 생긴다(kubernetes.yaml ingress: true, ingress-cards.sh).
 # 여기에는 클러스터 Ingress 가 없는 바깥 사이트만 적는다. 공개 저장소라 공개 주소만.
-- Link:
+# 2026-11-26 사용자 지시: Link 그룹을 없애고 GitHub 를 Cloud 로 옮김.
+- Cloud:
     - GitHub:
         href: https://github.com/hyungjin7
         description: 소스 정본
         icon: github.png
-        weight: 20
+        weight: 70

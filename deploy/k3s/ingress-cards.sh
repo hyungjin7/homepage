@@ -13,7 +13,7 @@ set -euo pipefail
 MODE="${1:-preview}"
 
 # 주소|찾을 경로|카드 이름|그룹|아이콘|설명|순서|열 주소(비우면 https://주소)
-# 그룹 순서 Customer → Develop → Cloud → Link, 그룹 안 순서 = 순서 칸(작을수록 앞). GitHub(Link 20)는 config/services.yaml.
+# 그룹 순서 Customer → Develop → Cloud, 그룹 안 순서 = 순서 칸(작을수록 앞). Link(옛 ai) 그룹은 2026-11-26 사용자 지시로 없애고 카드를 Cloud 로 옮김. GitHub(Cloud 70)는 config/services.yaml.
 CARDS='
 homepage.delvrio.com|/|Homepage|Customer|homepage.png|이 화면|10|
 bible.delvrio.com|/|말씀 스와이프|Customer|mdi-book-open-variant|틱톡처럼 넘겨 보는 성경 (개역한글)|20|
@@ -36,8 +36,8 @@ k8s.delvrio.com|/|Kubernetes|Cloud|kubernetes.png|Headlamp (회사에서만)|30|
 gitea.delvrio.com|/|Gitea|Cloud|gitea.png|빌드 · 배포|40|
 argocd.delvrio.com|/|Argo CD|Cloud|argo-cd.png|배포 상태|50|
 sso.delvrio.com|/admin|Keycloak|Cloud|keycloak.png|로그인 관리 (회사에서만)|60|https://sso.delvrio.com/admin/master/console/
-ai.delvrio.com|/|Open WebUI|Link|open-webui.png|AI 채팅 · 삭제 예정|10|
-omlx.delvrio.com|/|oMLX|Link|mdi-brain|로컬 LLM 서버|30|https://omlx.delvrio.com/admin
+ai.delvrio.com|/|Open WebUI|Cloud|open-webui.png|AI 채팅 · 삭제 예정|80|
+omlx.delvrio.com|/|oMLX|Cloud|mdi-brain|로컬 LLM 서버|90|https://omlx.delvrio.com/admin
 '
 
 # 클러스터의 Ingress 를 "namespace 이름 주소 경로" 줄로 펼친다(규칙·경로마다 한 줄).
