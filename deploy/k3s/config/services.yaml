@@ -1,5 +1,5 @@
 # 카드는 대부분 Ingress 이름표로 자동으로 생긴다(kubernetes.yaml ingress: true, ingress-cards.sh).
-# 여기에는 클러스터 Ingress 가 없는 카드만 적는다(GitHub, GPU). 공개 저장소라 공개 주소만, 내부 주소·키는 Secret 의 HOMEPAGE_VAR_….
+# 여기에는 클러스터 Ingress 가 없는 카드만 적는다(GitHub). 공개 저장소라 공개 주소만, 내부 주소·키는 Secret 의 HOMEPAGE_VAR_….
 # 2026-11-26 사용자 지시: Link 그룹을 없애고 GitHub 를 Cloud 로 옮김.
 - Cloud:
     - GitHub:
@@ -7,39 +7,3 @@
         description: 소스 정본
         icon: github.png
         weight: 45
-    # GPU 지금 값(Prometheus). 주소는 내부 주소라 공개 저장소에 쓰지 않고 Secret 의 HOMEPAGE_VAR_PROMETHEUS_URL 로 받는다.
-    # 지표 이름은 bbb 저장소 Grafana GPU 대시보드(infra/3rd-party/grafana/gpu-dashboard.yaml)와 같다.
-    - GPU:
-        icon: mdi-expansion-card
-        description: studio Mac · alpha-98 지금 값
-        weight: 75
-        widget:
-          type: prometheusmetric
-          url: "{{HOMEPAGE_VAR_PROMETHEUS_URL}}"
-          refreshInterval: 15000
-          metrics:
-            - label: studio 온도
-              query: max(mac_gpu_temp_celsius{host="studio"})
-              format:
-                type: number
-                suffix: "℃"
-                options:
-                  maximumFractionDigits: 0
-            - label: studio 전력
-              query: max(mac_gpu_power_watts{host="studio"})
-              format:
-                type: number
-                suffix: W
-                options:
-                  maximumFractionDigits: 1
-            - label: alpha-98 온도
-              query: max(nvidia_smi_temperature_gpu{host="alpha-98"})
-              format:
-                type: number
-                suffix: "℃"
-                options:
-                  maximumFractionDigits: 0
-            - label: alpha-98 사용률
-              query: max(nvidia_smi_utilization_gpu_ratio{host="alpha-98"})
-              format:
-                type: percent
