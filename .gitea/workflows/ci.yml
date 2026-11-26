@@ -1,0 +1,41 @@
+name: homepage 배포
+
+# GitHub dev → Sync to Gitea(.github/workflows/sync-to-gitea.yml) → Gitea dev push → 이 CI.
+# 이미지는 공식 ghcr.io/gethomepage/homepage(02-app.yaml 고정 버전)라 빌드하지 않는다. 설정·매니페스트만 적용한다.
+# Gitea 는 .gitea/workflows 가 있으면 .github/workflows(포크 원본의 GitHub 용 작업)는 돌리지 않는다.
+# 러너·kubeconfig 는 bbb·slp·iii·easybible CI 와 같다.
+on:
+  push:
+    branches:
+      - dev
+  workflow_dispatch:
+
+concurrency:
+  group: homepage-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      KUBECONFIG: /root/.kube/config
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install kubectl
+        run: |
+          curl -sLo /usr/local/bin/kubectl "https://dl.k8s.io/release/v1.36.3/bin/linux/amd64/kubectl"
+          chmod +x /usr/local/bin/kubectl
+
+      - name: Apply manifests
+        run: |
+          set -e
+          # config/*.yaml 은 configMapGenerator 라 내용이 바뀌면 ConfigMap 이름이 바뀌고 Pod 가 새로 뜬다.
+          kubectl apply -k deploy/k3s
+          kubectl -n homepage rollout status deployment/homepage --timeout=180s || echo "::warning::homepage rollout 대기 시간 초과"
+
+      - name: Card labels on existing Ingresses
+        run: |
+          # 다른 앱 Ingress 에 카드 이름표만 붙이고 뗀다(주소·경로는 건드리지 않음). 여러 번 해도 안전.
+          bash deploy/k3s/ingress-cards.sh --apply

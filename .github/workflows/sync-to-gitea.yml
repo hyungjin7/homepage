@@ -1,0 +1,46 @@
+name: Sync to Gitea
+
+# GitHub dev(이 포크의 기본 브랜치)에 push 되면 Gitea dev 로 넘긴다. Gitea push 가 Gitea CI(빌드/배포)를 깨운다.
+# force push 는 하지 않는다. Gitea dev 가 앞서 있으면(예: Gitea CI 의 매니페스트 태그 커밋)
+# 그 커밋을 먼저 merge 한 뒤 push 한다. 충돌이 나면 실패하므로 사람이 해결한다.
+on:
+  push:
+    branches: [dev]
+  workflow_dispatch:
+
+concurrency:
+  group: sync-to-gitea
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Push to Gitea dev
+        env:
+          GITEA_USER: ${{ secrets.GITEA_USER }}
+          GITEA_TOKEN: ${{ secrets.GITEA_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${GITEA_USER}" ] || [ -z "${GITEA_TOKEN}" ]; then
+            echo "::error::GITEA_USER / GITEA_TOKEN secret 이 없습니다"; exit 1
+          fi
+          AUTH=$(printf '%s:%s' "$GITEA_USER" "$GITEA_TOKEN" | base64 -w0)
+          echo "::add-mask::$AUTH"
+          GITEA_URL=https://gitea.delvrio.com/hyungjin7/homepage.git
+          GIT_AUTH=(-c "http.extraheader=Authorization: Basic $AUTH")
+          # 새로 만든 빈 저장소(dev 없음)면 fetch 가 실패하므로 병합 없이 바로 push 한다.
+          if git "${GIT_AUTH[@]}" fetch "$GITEA_URL" dev; then
+            if ! git merge-base --is-ancestor FETCH_HEAD HEAD; then
+              git config user.name "github-actions"
+              git config user.email "github-actions@users.noreply.github.com"
+              git merge --no-edit FETCH_HEAD
+            fi
+          else
+            echo "Gitea dev 가 아직 없음 — 최초 push"
+          fi
+          git "${GIT_AUTH[@]}" push "$GITEA_URL" HEAD:refs/heads/dev
