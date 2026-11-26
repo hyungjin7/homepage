@@ -39,31 +39,47 @@ ai.delvrio.com|/|Open WebUI|Link|open-webui.png|AI 채팅 · 삭제 예정|10|
 omlx.delvrio.com|/|oMLX|Link|mdi-brain|로컬 LLM 서버|20|https://omlx.delvrio.com/admin
 '
 
-# 카드 안 위젯(앱 지표). 주소|위젯 종류|위젯 url|키 이름(Secret homepage-secrets 의 HOMEPAGE_VAR_…)
-# 키가 Secret 에 있을 때만 위젯을 붙이고, 없으면 뗀다(키 없이 붙이면 카드에 오류가 보임). 키 값은 파일에 쓰지 않는다(공개 저장소).
-# 만드는 법: README "카드 위젯".
+# 카드 안 위젯(앱 지표). 한 줄 = 주소|필요한 키(Secret homepage-secrets 의 HOMEPAGE_VAR_…, 여럿이면 띄어 씀)|이름표들
+# 이름표는 ";" 로 나눈 widget.<칸>=값 (gethomepage.dev/ 는 붙여 줌). 값의 {{HOMEPAGE_VAR_…}} 는 Homepage 가 Secret 값으로 바꾼다.
+# 키가 Secret 에 모두 있을 때만 위젯을 붙이고, 없으면 widget.* 이름표를 모두 뗀다(키 없이 붙이면 카드에 오류).
+# 키 값은 파일에 쓰지 않는다(공개 저장소). 만드는 법: README "카드 위젯".
 WIDGETS='
-argocd.delvrio.com|argocd|https://argocd.delvrio.com|HOMEPAGE_VAR_ARGOCD_KEY
-gitea.delvrio.com|gitea|https://gitea.delvrio.com|HOMEPAGE_VAR_GITEA_KEY
+argocd.delvrio.com|HOMEPAGE_VAR_ARGOCD_KEY|widget.type=argocd;widget.url=https://argocd.delvrio.com;widget.key={{HOMEPAGE_VAR_ARGOCD_KEY}}
+gitea.delvrio.com|HOMEPAGE_VAR_GITEA_KEY|widget.type=gitea;widget.url=https://gitea.delvrio.com;widget.key={{HOMEPAGE_VAR_GITEA_KEY}}
+grafana.delvrio.com|HOMEPAGE_VAR_GRAFANA_KEY|widget.type=customapi;widget.url=https://grafana.delvrio.com/api/prometheus/grafana/api/v1/alerts;widget.headers.Authorization=Bearer {{HOMEPAGE_VAR_GRAFANA_KEY}};widget.refreshInterval=60000;widget.mappings.0.field=data.alerts.length;widget.mappings.0.label=켜진 알림;widget.mappings.0.format=number
+n8n.delvrio.com|HOMEPAGE_VAR_N8N_KEY|widget.type=customapi;widget.url=https://n8n.delvrio.com/api/v1/workflows?active=true&limit=250;widget.headers.X-N8N-API-KEY={{HOMEPAGE_VAR_N8N_KEY}};widget.refreshInterval=300000;widget.mappings.0.field=data.length;widget.mappings.0.label=켜진 워크플로;widget.mappings.0.format=number
 '
 has_key() {
   [ -n "$(kubectl -n homepage get secret homepage-secrets -o jsonpath="{.data.$1}" 2>/dev/null)" ]
 }
+has_keys() {
+  local k
+  for k in $1; do has_key "$k" || return 1; done
+}
+# 이 Ingress 에 붙은 gethomepage.dev/widget.* 이름표를 모두 뗀다(칸이 바뀌어도 남는 것이 없게).
+drop_widget() {
+  local old
+  old=$(kubectl -n "$1" get ingress "$2" -o go-template='{{range $k, $v := .metadata.annotations}}{{$k}}{{"\n"}}{{end}}' 2>/dev/null |
+    grep '^gethomepage\.dev/widget\.' | sed 's/$/-/' || true)
+  [ -n "$old" ] && kubectl -n "$1" annotate ingress "$2" $old >/dev/null 2>&1 || true
+}
 card_widget() {
-  local host="$1" ns="$2" ing="$3" mode="$4" line wtype wurl wkey
+  local host="$1" ns="$2" ing="$3" mode="$4" line keys pairs
   line=$(awk -F'|' -v h="$host" '$1==h {print; exit}' <<<"$WIDGETS")
   [ -z "$line" ] && return 0
-  IFS='|' read -r _ wtype wurl wkey <<<"$line"
-  if [ "$mode" = "--apply" ] && has_key "$wkey"; then
-    kubectl -n "$ns" annotate ingress "$ing" --overwrite gethomepage.dev/widget.type="$wtype" \
-      gethomepage.dev/widget.url="$wurl" gethomepage.dev/widget.key="{{${wkey}}}" >/dev/null
-    echo "          위젯 $wtype 붙임"
+  IFS='|' read -r _ keys pairs <<<"$line"
+  if [ "$mode" = "--apply" ] && has_keys "$keys"; then
+    drop_widget "$ns" "$ing"
+    local args=() pair
+    IFS=';' read -ra parts <<<"$pairs"
+    for pair in "${parts[@]}"; do args+=("gethomepage.dev/$pair"); done
+    kubectl -n "$ns" annotate ingress "$ing" --overwrite "${args[@]}" >/dev/null
+    echo "          위젯 붙임"
   elif [ "$mode" = "--apply" ] || [ "$mode" = "--remove" ]; then
-    kubectl -n "$ns" annotate ingress "$ing" gethomepage.dev/widget.type- gethomepage.dev/widget.url- \
-      gethomepage.dev/widget.key- >/dev/null 2>&1 || true
-    [ "$mode" = "--apply" ] && echo "          위젯 $wtype 안 붙임 — Secret homepage-secrets 에 $wkey 가 없음"
+    drop_widget "$ns" "$ing"
+    [ "$mode" = "--apply" ] && echo "          위젯 안 붙임 — Secret homepage-secrets 에 $keys 가 없음"
   else
-    if has_key "$wkey"; then echo "          위젯 $wtype 붙일 예정"; else echo "          위젯 $wtype 키 없음($wkey)"; fi
+    if has_keys "$keys"; then echo "          위젯 붙일 예정"; else echo "          위젯 키 없음($keys)"; fi
   fi
 }
 
