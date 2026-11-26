@@ -98,6 +98,22 @@ for gone in $REMOVED; do
   done
 done
 
+# 주소를 옮긴 옛 Ingress 의 이름표 떼기(같은 카드 이름이 새 Ingress 에도 있어 이름으로는 못 찾고 주소로 찾는다).
+# i3.delvrio.com → iii.delvrio.com(2026-11-25). 새 iii 카드는 iii 저장소 deploy/k3s/ingress-frontend.yaml 이름표로 나온다.
+REMOVED_HOSTS='i3.delvrio.com'
+for gone in $REMOVED_HOSTS; do
+  awk -v h="$gone" '$3==h {print $1" "$2}' <<<"$LIST" | sort -u | while read -r ns ing; do
+    if [ "$MODE" = "--apply" ] || [ "$MODE" = "--remove" ]; then
+      kubectl -n "$ns" annotate ingress "$ing" gethomepage.dev/enabled- gethomepage.dev/external- \
+        gethomepage.dev/name- gethomepage.dev/group- gethomepage.dev/icon- gethomepage.dev/description- \
+        gethomepage.dev/weight- gethomepage.dev/href- gethomepage.dev/siteMonitor- >/dev/null 2>&1 || true
+      echo "  뗌      옛 주소 $gone → $ns/$ing"
+    else
+      echo "  뗄 예정 옛 주소 $gone → $ns/$ing"
+    fi
+  done
+done
+
 echo "Ingress 를 못 찾은 카드: ${missing}개"
 [ "$MODE" = "preview" ] && echo "바꾸려면: bash $0 --apply"
 exit 0
