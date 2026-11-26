@@ -30,10 +30,10 @@ odysseus.delvrio.com|/|Odysseus|Develop|mdi-sail-boat|AI 작업실|90|
 n8n.delvrio.com|/|n8n|Develop|n8n.png|자동화 워크플로|100|
 crm.delvrio.com|/|CRM|Develop|mdi-account-group-outline|TNC CRM|110|
 grafana.delvrio.com|/|Grafana|Cloud|grafana.png|그래프 · GPU 기록|10|
-prometheus.delvrio.com|/|Prometheus|Cloud|prometheus.png|지표 수집|20|
+prometheus.delvrio.com|/|Prometheus|Cloud|prometheus.png|지표 수집|50|
 k8s.delvrio.com|/|Kubernetes|Cloud|kubernetes.png|Headlamp (회사에서만)|30|
 gitea.delvrio.com|/|Gitea|Cloud|gitea.png|빌드 · 배포|40|
-argocd.delvrio.com|/|Argo CD|Cloud|argo-cd.png|배포 상태|50|
+argocd.delvrio.com|/|Argo CD|Cloud|argo-cd.png|배포 상태|20|
 sso.delvrio.com|/admin|Keycloak|Cloud|keycloak.png|로그인 관리 (회사에서만)|60|https://sso.delvrio.com/admin/master/console/
 ai.delvrio.com|/|Open WebUI|Link|open-webui.png|AI 채팅 · 삭제 예정|10|
 omlx.delvrio.com|/|oMLX|Link|mdi-brain|로컬 LLM 서버|20|https://omlx.delvrio.com/admin
