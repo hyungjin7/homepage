@@ -38,14 +38,7 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
     traefik.ingress.kubernetes.io/router.middlewares: homepage-homepage-sso@kubernetescrd
-    # Homepage 카드 이름표(README "카드 자동 등록")
-    gethomepage.dev/enabled: "true"
-    gethomepage.dev/external: "true"
-    gethomepage.dev/name: Homepage
-    gethomepage.dev/group: Customer
-    gethomepage.dev/icon: homepage.png
-    gethomepage.dev/description: 이 화면
-    gethomepage.dev/weight: "10"
+    # Homepage 카드는 자기 자신이라 달지 않는다(2026-11-26 사용자 지시)
 spec:
   ingressClassName: traefik
   tls:

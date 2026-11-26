@@ -13,23 +13,22 @@ set -euo pipefail
 MODE="${1:-preview}"
 
 # 주소|찾을 경로|카드 이름|그룹|아이콘|설명|순서|열 주소(비우면 https://주소)
-# 그룹 순서 Customer → Develop → Cloud, 그룹 안 순서 = 순서 칸(작을수록 앞). Link(옛 ai) 그룹은 2026-11-26 사용자 지시로 없애고 카드를 Cloud 로 옮김. GitHub(Cloud 70)는 config/services.yaml.
+# 그룹 순서 Customer → Develop → Cloud, 그룹 안 순서 = 순서 칸(작을수록 앞). Link(옛 ai) 그룹은 2026-11-26 사용자 지시로 없애고 카드를 Cloud 로 옮김. GitHub(Cloud 45, Gitea 뒤)는 config/services.yaml.
 CARDS='
-homepage.delvrio.com|/|Homepage|Customer|homepage.png|이 화면|10|
 bible.delvrio.com|/|말씀 스와이프|Customer|mdi-book-open-variant|틱톡처럼 넘겨 보는 성경 (개역한글)|20|
-slp.delvrio.com|/|그린로직스|Customer|mdi-truck-outline|운송내역 관리 (SLP)|30|https://gl.delvrio.com
-crm.delvrio.com|/|CRM|Customer|mdi-account-group-outline|TNC CRM|40|
+slp.delvrio.com|/|그린로직스|Customer|mdi-truck-outline|운송내역 관리 (SLP)|5|https://gl.delvrio.com
 suntax.delvrio.com|/|Suntax|Customer|mdi-calculator-variant-outline|세무 업무 (자체 로그인)|50|
 www.delvrio.com|/|홈페이지|Customer|mdi-web|Delve 회사 홈페이지|60|
 bbb.delvrio.com|/|bbb|Develop|mdi-robot-outline|중앙 운영 · AI|10|
 ccc.delvrio.com|/|ccc|Develop|mdi-shield-check-outline|CSAP · AutoResearch · Agent|20|
 chat.delvrio.com|/|Chat|Develop|rocket-chat.png|Rocket.Chat · SSO 바로 연결|30|https://chat.delvrio.com/oauth/keycloak
 dashboard.delvrio.com|/|Dashboard|Develop|mdi-view-dashboard-outline|예약 작업 · GPU · 운영|40|
-dify.delvrio.com|/|Dify|Develop|dify.png|AI 워크플로 · SSO 안됨(자체 로그인)|50|
+dify.delvrio.com|/|Dify|Develop|https://dify.delvrio.com/favicon.ico|AI 워크플로 · SSO 안됨(자체 로그인)|50|
 moa.delvrio.com|/|MoA|Develop|mdi-book-open-page-variant-outline|설계 문서|70|
 nextcloud.delvrio.com|/|NextCloud|Develop|nextcloud.png|파일 공유|80|
 odysseus.delvrio.com|/|Odysseus|Develop|mdi-sail-boat|AI 작업실|90|
 n8n.delvrio.com|/|n8n|Develop|n8n.png|자동화 워크플로|100|
+crm.delvrio.com|/|CRM|Develop|mdi-account-group-outline|TNC CRM|110|
 grafana.delvrio.com|/|Grafana|Cloud|grafana.png|그래프 · GPU 기록|10|
 prometheus.delvrio.com|/|Prometheus|Cloud|prometheus.png|지표 수집|20|
 k8s.delvrio.com|/|Kubernetes|Cloud|kubernetes.png|Headlamp (회사에서만)|30|
@@ -82,7 +81,8 @@ while IFS='|' read -r host path name group icon desc weight href; do
 done <<<"$CARDS"
 
 # 표에서 뺀 카드: 클러스터 Ingress 에 남은 이름표를 --apply 때 뗀다(카드 이름으로 찾음).
-REMOVED='Workspace MCP Netdata Flower OpenClaw'
+# Homepage = 이 화면 자신이라 카드에서 뺌(2026-11-26 사용자 지시)
+REMOVED='Workspace MCP Netdata Flower OpenClaw Homepage'
 for gone in $REMOVED; do
   kubectl get ingress -A --no-headers \
     -o custom-columns='NS:.metadata.namespace,NAME:.metadata.name,CARD:.metadata.annotations.gethomepage\.dev/name' |
