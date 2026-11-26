@@ -28,15 +28,32 @@ kubectl -n homepage rollout status deploy/homepage
 ```
 DNS 는 `*.delvrio.com` 와일드카드라 따로 할 일이 없다. 인증서는 cert-manager 가 몇 분 안에 발급한다(`kubectl -n homepage get certificate`).
 
-## 자동 배포 (2026-11-26~)
-GitHub `dev` 에 합치면 `.github/workflows/sync-to-gitea.yml` 이 Gitea `hyungjin7/homepage` `dev` 로 넘기고, Gitea CI(`.gitea/workflows/ci.yml`)가
-`kubectl apply -k deploy/k3s` 와 `ingress-cards.sh --apply` 를 한다. 이미지는 공식 이미지라 빌드하지 않는다.
-- 처음 한 번: GitHub 포크 Settings › Secrets › Actions 에 `GITEA_USER`·`GITEA_TOKEN`, 포크의 Actions 켜기. Gitea 저장소의 Actions 켜기.
-- 포크 원본(gethomepage)의 GitHub 작업(test·lint·docker-publish·Codecov 등)은 2026-11-26 지웠다. 우리는 빌드·시험을 하지 않고 설정만 배포한다. 원본을 다시 합칠 때 그 파일들이 되살아나면 다시 지운다.
-- Secret `homepage-secrets`(키 값)는 CI 가 만들지 않는다. 사람이 kubectl 로 넣는다.
+## 자동 배포 (Argo CD, 2026-11-26)
+GitHub `dev`에 커밋된 `deploy/k3s`를 Argo CD Application `homepage`가 자동 배포한다.
+공식 고정 이미지와 기존 설정 파일을 그대로 사용하며, 설정 변경으로 ConfigMap 이름이 달라지면 Pod가 교체된다.
+
+- GitHub의 Gitea 동기화 워크플로우는 유지한다. Gitea CI는 렌더링·설정·배포 범위만 검증하며 클러스터에 쓰지 않는다.
+- 공개 GitHub 저장소를 직접 읽으므로 Argo CD에 저장소 토큰을 추가하지 않는다.
+- 최초 등록: `kubectl apply -f deploy/argocd/homepage.yaml`.
+- 자동 삭제(prune)는 끈다. 삭제된 파일에 해당하는 리소스와 오래된 ConfigMap은 검토 후 별도로 정리한다.
+- Secret `homepage-secrets`와 인증서 Secret은 관리 대상이 아니다. 기존 값을 유지한다.
+- 다른 앱의 카드 이름표 수정은 `bash deploy/k3s/ingress-cards.sh` 미리보기 후 `--apply`로 수동 실행한다.
+- 이전에 삭제한 업스트림 GitHub 워크플로우는 이번 작업에서 복구하거나 추가 변경하지 않았다.
+
+검증: `kubectl kustomize deploy/k3s > .homepage-rendered.yaml`,
+`python deploy/k3s/validate_gitops.py .homepage-rendered.yaml`,
+`python -m unittest discover -s deploy/k3s/tests -v` (PyYAML 필요).
+
+배포 확인: `kubectl -n argocd get application homepage`의 Synced/Healthy와
+`kubectl -n homepage rollout status deploy/homepage`를 확인한다.
+CI 검증과 Argo CD 배포는 독립 실행이므로 Gitea CI 성공 자체가 배포 성공은 아니다.
+
+복구: 자동 동기화를 먼저 끄고(`kubectl -n argocd patch application homepage --type=merge -p '{"spec":{"syncPolicy":{"automated":null}}}'`),
+GitHub `dev`의 문제가 된 설정을 revert한다. 정상 설정 확인 후 자동 동기화를 다시 켠다.
+Application 삭제 시 리소스를 함께 지우는 finalizer는 설정하지 않는다.
 
 ## 설정 바꾸기
-`config/*.yaml` 을 고치고 같은 `kubectl apply -k` 를 다시 하면 Pod 가 저절로 새로 뜬다.
+`deploy/k3s/config/*.yaml`을 수정해 GitHub `dev`에 커밋하면 Argo CD가 적용하고 Pod가 저절로 새로 뜬다.
 - 서비스 카드: `config/services.yaml` · 안내 https://gethomepage.dev/configs/services/
 - 위젯 키 같은 비밀 값: 저장소에 넣지 않는다. Secret 을 만들고 설정에서 `{{HOMEPAGE_VAR_이름}}` 으로 쓴다.
   ```bash

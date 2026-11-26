@@ -1,0 +1,62 @@
+# Bootstrap once with kubectl apply -f deploy/argocd/homepage.yaml.
+# This file is intentionally outside the application's deploy/k3s source path.
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: homepage
+  namespace: argocd
+spec:
+  description: Homepage configuration deployment only
+  sourceRepos:
+  - https://github.com/hyungjin7/homepage.git
+  destinations:
+  - name: in-cluster
+    namespace: homepage
+  clusterResourceWhitelist:
+  - group: ''
+    kind: Namespace
+  - group: rbac.authorization.k8s.io
+    kind: ClusterRole
+  - group: rbac.authorization.k8s.io
+    kind: ClusterRoleBinding
+  namespaceResourceWhitelist:
+  - group: ''
+    kind: ConfigMap
+  - group: ''
+    kind: ServiceAccount
+  - group: ''
+    kind: Service
+  - group: apps
+    kind: Deployment
+  - group: networking.k8s.io
+    kind: Ingress
+  - group: traefik.io
+    kind: Middleware
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: homepage
+  namespace: argocd
+spec:
+  project: homepage
+  source:
+    repoURL: https://github.com/hyungjin7/homepage.git
+    targetRevision: dev
+    path: deploy/k3s
+  destination:
+    name: in-cluster
+    namespace: homepage
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:
+    - ApplyOutOfSyncOnly=true
+    retry:
+      limit: 3
+      backoff:
+        duration: 10s
+        factor: 2
+        maxDuration: 1m

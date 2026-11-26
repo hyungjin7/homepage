@@ -1,41 +1,43 @@
-name: homepage 배포
+name: Homepage configuration validation
 
-# GitHub dev → Sync to Gitea(.github/workflows/sync-to-gitea.yml) → Gitea dev push → 이 CI.
-# 이미지는 공식 ghcr.io/gethomepage/homepage(02-app.yaml 고정 버전)라 빌드하지 않는다. 설정·매니페스트만 적용한다.
-# Gitea 는 .gitea/workflows 가 있으면 .github/workflows(포크 원본의 GitHub 용 작업)는 돌리지 않는다.
-# 러너·kubeconfig 는 bbb·slp·iii·easybible CI 와 같다.
+# GitHub dev is the deployment source. Argo CD applies deploy/k3s.
+# Gitea mirrors the source and validates it without cluster credentials.
 on:
   push:
-    branches:
-      - dev
+    branches: [dev]
   workflow_dispatch:
 
 concurrency:
-  group: homepage-deploy
+  group: homepage-validation
   cancel-in-progress: false
 
 jobs:
-  deploy:
+  validate:
     runs-on: ubuntu-latest
-    env:
-      KUBECONFIG: /root/.kube/config
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-
-      - name: Install kubectl
+      - name: Render manifests offline
         run: |
-          curl -sLo /usr/local/bin/kubectl "https://dl.k8s.io/release/v1.36.3/bin/linux/amd64/kubectl"
-          chmod +x /usr/local/bin/kubectl
-
-      - name: Apply manifests
+          set -euo pipefail
+          mkdir -p /tmp/homepage-tools
+          cd /tmp/homepage-tools
+          BASE=https://dl.k8s.io/release/v1.36.3/bin/linux/amd64
+          curl -fsSLO "$BASE/kubectl"
+          curl -fsSLO "$BASE/kubectl.sha256"
+          echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
+          chmod +x kubectl
+          cd "$GITHUB_WORKSPACE"
+          /tmp/homepage-tools/kubectl kustomize deploy/k3s > .homepage-rendered.yaml
+          bash -n deploy/k3s/ingress-cards.sh
+      - name: Validate Homepage scope and settings
         run: |
-          set -e
-          # config/*.yaml 은 configMapGenerator 라 내용이 바뀌면 ConfigMap 이름이 바뀌고 Pod 가 새로 뜬다.
-          kubectl apply -k deploy/k3s
-          kubectl -n homepage rollout status deployment/homepage --timeout=180s || echo "::warning::homepage rollout 대기 시간 초과"
-
-      - name: Card labels on existing Ingresses
-        run: |
-          # 다른 앱 Ingress 에 카드 이름표만 붙이고 뗀다(주소·경로는 건드리지 않음). 여러 번 해도 안전.
-          bash deploy/k3s/ingress-cards.sh --apply
+          set -euo pipefail
+          tar -cf - deploy/k3s .homepage-rendered.yaml | docker run --rm -i python:3.12-slim sh -ec '
+            mkdir -p /workspace
+            tar -xf - -C /workspace
+            cd /workspace
+            pip install --disable-pip-version-check -q PyYAML==6.0.3
+            python deploy/k3s/validate_gitops.py .homepage-rendered.yaml
+            python -m unittest discover -s deploy/k3s/tests -v
+          '
