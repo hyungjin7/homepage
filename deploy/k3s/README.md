@@ -82,13 +82,16 @@ Homepage 는 이름표가 붙은 Ingress 를 스스로 찾아 카드로 만든�
 ## 카드 위젯 · 날씨 (2026-11-26)
 - 날씨: 맨 위 줄 "인천"(OpenMeteo, `config/widgets.yaml`). 키 필요 없음.
 - GPU 카드(Cloud): `config/services.yaml` 의 Prometheus 지표 4개(studio 온도·전력, alpha-98 온도·사용률). Secret 에 `HOMEPAGE_VAR_PROMETHEUS_URL`(클러스터 안 Prometheus 주소) 필요.
-- Argo CD·Gitea 카드 안 숫자: `ingress-cards.sh` 의 `WIDGETS` 표. Secret 에 키가 있을 때만 `--apply` 가 위젯을 붙인다.
+- Argo CD·Gitea·Grafana·n8n 카드 안 숫자: `ingress-cards.sh` 의 `WIDGETS` 표. Secret 에 키가 있을 때만 `--apply` 가 위젯을 붙인다(없으면 뗌). 이 스크립트는 CI·Argo CD 가 돌리지 않으니 키를 넣은 뒤 PC 에서 직접 돌린다.
+  - Argo CD: 앱 수·Synced·Healthy 등 전체 요약 / Gitea: 알림·이슈·PR / Grafana: 켜진 알림 수 / n8n: 켜진 워크플로 수
 
 | Secret 키 | 값 |
 |---|---|
 | `HOMEPAGE_VAR_PROMETHEUS_URL` | 클러스터 안 Prometheus 주소(bbb `services/rag` 의 `RAG_PROMETHEUS_URL` 과 같은 값) |
 | `HOMEPAGE_VAR_ARGOCD_KEY` | Argo CD 읽기 전용 계정 `homepage` 의 API 토큰 |
 | `HOMEPAGE_VAR_GITEA_KEY` | Gitea 토큰(read: repository·issue·notification) |
+| `HOMEPAGE_VAR_GRAFANA_KEY` | Grafana 서비스 계정(역할 Viewer) 토큰 `glsa_…` |
+| `HOMEPAGE_VAR_N8N_KEY` | n8n Settings › n8n API 에서 만든 API 키 |
 
 Secret 은 `kubectl -n homepage patch secret homepage-secrets --type merge -p '{"stringData":{"키":"값"}}'`(없으면 `create secret generic`)로 넣고 `kubectl -n homepage rollout restart deploy/homepage`.
 
