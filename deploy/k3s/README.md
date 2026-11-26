@@ -93,7 +93,9 @@ Homepage 는 이름표가 붙은 Ingress 를 스스로 찾아 카드로 만든�
 | `HOMEPAGE_VAR_GRAFANA_KEY` | Grafana 서비스 계정(역할 Viewer) 토큰 `glsa_…` |
 | `HOMEPAGE_VAR_N8N_KEY` | n8n Settings › n8n API 에서 만든 API 키 |
 
-Secret 넣기(2026-11-26 실제로 겪은 함정 반영):
+**키 넣기는 스크립트 하나로**: `bash deploy/k3s/set-widget-keys.sh argocd grafana`(인자 없으면 4개 모두, `--check` 는 들어 있는 키 이름만). 붙여 넣기 → 군더더기 글자 제거 → 실제 API 시험(200 일 때만 저장) → 그 키만 Secret 에 더함 → 재시작 → `ingress-cards.sh --apply`.
+
+손으로 넣을 때의 함정(2026-11-26 실제로 겪음):
 - 긴 토큰(Argo CD 약 240자)은 화면에서 두 줄로 복사돼 `read` 가 첫 줄만 받는다. `cat > ~/argo.tok` 로 붙여 넣고 Enter → Ctrl+D, `AK=$(tr -d '\r\n\t "\\' < ~/argo.tok); rm -f ~/argo.tok; echo "${#AK}"` 로 길이를 확인한다.
 - 값에 줄바꿈·따옴표가 남으면 Homepage 로그에 `Error attempting k8s environment variable substitution` 이 나고 카드에 API 오류가 보인다.
 - `patch -p '{json}'` 은 따옴표가 깨지기 쉬우니 기존 값을 읽어 `kubectl -n homepage create secret generic homepage-secrets --from-literal=HOMEPAGE_VAR_…="$값" … --dry-run=client -o yaml | kubectl apply -f -` 로 통째로 다시 만든다(기존 키도 모두 같이 적을 것).
