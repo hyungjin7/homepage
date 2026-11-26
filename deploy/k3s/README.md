@@ -47,7 +47,7 @@ Homepage 는 이름표가 붙은 Ingress 를 스스로 찾아 카드로 만든�
   gethomepage.dev/enabled: "true"
   gethomepage.dev/external: "true"        # Pod 상태 표시 안 함(이름표 규칙이 앱마다 달라서)
   gethomepage.dev/name: 새앱
-  gethomepage.dev/group: Develop           # Customer | Develop | Cloud | Link
+  gethomepage.dev/group: Develop           # Customer | Develop | Cloud
   gethomepage.dev/icon: mdi-apps           # https://pictogrammers.com/library/mdi/ 또는 xxx.png
   gethomepage.dev/description: 한 줄 설명
   gethomepage.dev/siteMonitor: https://새앱.delvrio.com
